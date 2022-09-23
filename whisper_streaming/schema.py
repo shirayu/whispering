@@ -10,6 +10,7 @@ class WhisperConfig(BaseModel):
     device: str
     language: str
 
+    fp16: bool = True
     temperatures: Tuple[float, ...] = (0.0, 0.2, 0.4, 0.6, 0.8, 1.0)
     compression_ratio_threshold: Optional[float] = 2.4
     logprob_threshold: Optional[float] = -1.0
