@@ -41,9 +41,8 @@ def transcribe_from_mic(
     ):
         while True:
             segment = q.get()
-            r = wsp.transcribe(segment=segment)
-            if r is not None:
-                print(r.text)
+            for chunk in wsp.transcribe(segment=segment):
+                print(f"{chunk.start}->{chunk.end}\t{chunk.text}")
 
 
 def get_opts() -> argparse.Namespace:
