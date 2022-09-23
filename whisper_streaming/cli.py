@@ -40,10 +40,13 @@ def transcribe_from_mic(
         channels=1,
         callback=sd_callback,
     ):
+        idx: int = 0
         while True:
+            logger.debug(f"Segment: {idx}")
             segment = q.get()
             for chunk in wsp.transcribe(segment=segment):
                 print(f"{chunk.start:.2f}->{chunk.end:.2f}\t{chunk.text}")
+            idx += 1
 
 
 def get_opts() -> argparse.Namespace:
