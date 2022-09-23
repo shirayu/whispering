@@ -21,6 +21,7 @@ def transcribe_from_mic(
     *,
     config: WhisperConfig,
     sd_device: Optional[Union[int, str]],
+    num_block: int,
 ) -> None:
     wsp = WhisperStreamingTranscriber(config=config)
     q = queue.Queue()
@@ -33,7 +34,7 @@ def transcribe_from_mic(
     logger.info("Ready to transcribe")
     with sd.InputStream(
         samplerate=SAMPLE_RATE,
-        blocksize=N_FRAMES * 10,  # FIXME
+        blocksize=N_FRAMES * num_block,
         device=sd_device,
         dtype="float32",
         channels=1,
@@ -73,6 +74,13 @@ def get_opts() -> argparse.Namespace:
         default=5,
     )
     parser.add_argument(
+        "--num_block",
+        "-b",
+        type=int,
+        default=20,
+        help="Number of operation unit. Larger values can improve accuracy but consume more memory.",
+    )
+    parser.add_argument(
         "--mic",
     )
 
@@ -98,6 +106,7 @@ def main() -> None:
     transcribe_from_mic(
         config=config,
         sd_device=opts.mic,
+        num_block=opts.num_block,
     )
 
 
