@@ -75,7 +75,7 @@ def get_opts() -> argparse.Namespace:
     )
     parser.add_argument(
         "--num_block",
-        "-b",
+        "-n",
         type=int,
         default=20,
         help="Number of operation unit. Larger values can improve accuracy but consume more memory.",
