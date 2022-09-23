@@ -3,6 +3,7 @@
 import argparse
 import queue
 from logging import INFO, getLogger
+from typing import Optional, Union
 
 import sounddevice as sd
 import torch
@@ -16,8 +17,11 @@ from whisper_streaming.transcriber import WhisperStreamingTranscriber
 logger = getLogger(__name__)
 
 
-def transcribe_from_mic(config: WhisperConfig) -> None:
-    sd_device = None
+def transcribe_from_mic(
+    *,
+    config: WhisperConfig,
+    sd_device: Optional[Union[int, str]],
+) -> None:
     wsp = WhisperStreamingTranscriber(config=config)
     q = queue.Queue()
 
@@ -69,6 +73,9 @@ def get_opts() -> argparse.Namespace:
         type=int,
         default=5,
     )
+    parser.add_argument(
+        "--mic",
+    )
 
     return parser.parse_args()
 
@@ -78,13 +85,21 @@ def main() -> None:
     logger.setLevel(INFO)
     if opts.beam_size <= 0:
         opts.beam_size = None
+    try:
+        opts.mic = int(opts.mic)
+    except Exception:
+        pass
+
     config = WhisperConfig(
         model_name=opts.model,
         language=opts.language,
         device=opts.device,
         beam_size=opts.beam_size,
     )
-    transcribe_from_mic(config=config)
+    transcribe_from_mic(
+        config=config,
+        sd_device=opts.mic,
+    )
 
 
 if __name__ == "__main__":
