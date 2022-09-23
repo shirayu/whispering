@@ -160,7 +160,7 @@ class WhisperStreamingTranscriber:
                 tokens[last_slice - 1].item() - self.tokenizer.timestamp_begin
             )
             self.buffer_tokens.extend(tokens[: last_slice + 1].tolist())
-            self.timestamp += last_timestamp_position * self.input_stride
+            self.timestamp += last_timestamp_position * self.time_precision
         else:
             duration = segment_duration
             timestamps = tokens[timestamp_tokens.nonzero().flatten()]
