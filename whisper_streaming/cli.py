@@ -42,7 +42,7 @@ def transcribe_from_mic(
         while True:
             segment = q.get()
             for chunk in wsp.transcribe(segment=segment):
-                print(f"{chunk.start}->{chunk.end}\t{chunk.text}")
+                print(f"{chunk.start:.2f}->{chunk.end:.2f}\t{chunk.text}")
 
 
 def get_opts() -> argparse.Namespace:
