@@ -216,6 +216,7 @@ class WhisperStreamingTranscriber:
             # do not feed the prompt tokens if a high temperature was used
             del self.buffer_tokens
             self.buffer_tokens = []
+        logger.debug(f"Length of buffer: {len(self.buffer_tokens)}")
 
     def transcribe(
         self,
@@ -245,6 +246,10 @@ class WhisperStreamingTranscriber:
                 segment=segment,
             )
             result = results[0]
+            logger.debug(
+                f"Result: temperature={result.temperature}, no_speech_prob={result.no_speech_prob}, "
+                f"avg_logprob={result.avg_logprob}"
+            )
 
             if self.config.no_speech_threshold is not None:
                 if (result.no_speech_prob > self.config.no_speech_threshold) and not (
