@@ -1,0 +1,16 @@
+{
+    "author": "",
+    "description": "",
+    "license": "",
+    "main": "",
+    "name": "pyright-exec",
+    "scripts": {
+        "pyright": "pyright"
+    },
+    "version": "1.0.0",
+    "dependencies": {},
+    "devDependencies": {
+        "markdownlint-cli": "^0.32.1",
+        "pyright": "^1.1.270"
+    }
+}
