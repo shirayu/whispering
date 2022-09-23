@@ -38,7 +38,6 @@ class WhisperStreamingTranscriber:
         )  # time per output token: 0.02 (seconds)
 
         self.buffer_tokens = []
-        self.buffer_segments = []
 
     def _get_decoding_options(
         self,
