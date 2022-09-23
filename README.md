@@ -10,11 +10,16 @@ Streaming transcriber with [whisper](https://github.com/openai/whisper)
 ## Example
 
 ```bash
+# Setup
 git clone https://github.com/shirayu/whisper_streaming.git
 cd whisper_streaming
 poetry install --only main
-poetry run whisper_streaming --language ja --model base
+
+# Run!
+poetry run whisper_streaming --language ja --model base -n 20
 ```
+
+- ``-n`` sets interval of parsing. Larger values can improve accuracy but consume more memory.
 
 ## Tips
 
