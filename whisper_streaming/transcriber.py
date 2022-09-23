@@ -247,8 +247,8 @@ class WhisperStreamingTranscriber:
             )
             result = results[0]
             logger.debug(
-                f"Result: temperature={result.temperature}, no_speech_prob={result.no_speech_prob}, "
-                f"avg_logprob={result.avg_logprob}"
+                f"Result: temperature={result.temperature:.2f}, no_speech_prob={result.no_speech_prob:.2f}, "
+                f"avg_logprob={result.avg_logprob:.2f}"
             )
 
             if self.config.no_speech_threshold is not None:
