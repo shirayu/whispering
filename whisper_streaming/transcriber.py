@@ -150,8 +150,10 @@ class WhisperStreamingTranscriber:
         if (
             len(consecutive) > 0
         ):  # if the output contains two consecutive timestamp tokens
+            logger.debug(f"Length of consecutive: {len(consecutive)}")
             last_slice = 0
             for current_slice in consecutive:
+                logger.debug(f" last_slice={last_slice}, current_slice={current_slice}")
                 sliced_tokens = tokens[last_slice:current_slice]
                 start_timestamp_position = (
                     sliced_tokens[0].item() - self.tokenizer.timestamp_begin
@@ -177,6 +179,7 @@ class WhisperStreamingTranscriber:
             self.timestamp += last_timestamp_position0 * self.time_precision
             yield last_timestamp_position0
         else:
+            logger.debug("Length of consecutive: 0")
             duration = segment_duration
             timestamps = tokens[timestamp_tokens.nonzero().flatten()]
             if len(timestamps) > 0:
