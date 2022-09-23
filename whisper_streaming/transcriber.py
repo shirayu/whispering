@@ -160,6 +160,7 @@ class WhisperStreamingTranscriber:
                 tokens[last_slice - 1].item() - self.tokenizer.timestamp_begin
             )
             self.buffer_tokens.extend(tokens[: last_slice + 1].tolist())
+            self.timestamp += last_timestamp_position * self.input_stride
         else:
             duration = segment_duration
             timestamps = tokens[timestamp_tokens.nonzero().flatten()]
@@ -178,6 +179,7 @@ class WhisperStreamingTranscriber:
             )
             if chunk is not None:
                 yield chunk
+            self.timestamp += float(segment_duration * HOP_LENGTH / SAMPLE_RATE)
 
         if result.temperature > 0.5:
             # do not feed the prompt tokens if a high temperature was used
@@ -208,4 +210,3 @@ class WhisperStreamingTranscriber:
         yield from self._deal_timestamp(
             result=result, segment_duration=segment_duration
         )
-        self.timestamp += float(segment.shape[-1] * HOP_LENGTH / SAMPLE_RATE)
