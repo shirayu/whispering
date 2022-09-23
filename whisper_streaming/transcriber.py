@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from logging import INFO, getLogger
 from typing import Iterator, List, Optional, Union
 
 import numpy as np
@@ -18,6 +19,8 @@ from whisper.tokenizer import get_tokenizer
 from whisper.utils import exact_div
 
 from whisper_streaming.schema import ParsedChunk, WhisperConfig
+
+logger = getLogger(__name__)
 
 
 class WhisperStreamingTranscriber:
@@ -214,6 +217,7 @@ class WhisperStreamingTranscriber:
         seek: int = 0
         rest_start: Optional[int] = None
         while seek < mel.shape[-1]:
+            logger.debug(seek)
             segment = (
                 pad_or_trim(mel[:, :, seek:], N_FRAMES)
                 .to(self.model.device)  # type: ignore
