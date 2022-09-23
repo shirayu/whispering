@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 
-from logging import INFO, getLogger
+from logging import getLogger
 from typing import Iterator, List, Optional, Union
 
 import numpy as np
 import torch
-from transformers.utils.dummy_pt_objects import OPT_PRETRAINED_MODEL_ARCHIVE_LIST
 from whisper import Whisper, load_model
 from whisper.audio import (
     HOP_LENGTH,
@@ -255,5 +254,6 @@ class WhisperStreamingTranscriber:
         if rest_start is None:
             return
 
+        logger.debug(f"rest_start={rest_start}")
         self.buffer_mel = mel[:, :, rest_start:]
         del mel

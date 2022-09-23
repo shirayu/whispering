@@ -2,8 +2,7 @@
 
 import argparse
 import queue
-import sys
-from logging import DEBUG, INFO, StreamHandler, basicConfig, getLogger
+from logging import DEBUG, INFO, basicConfig, getLogger
 from typing import Optional, Union
 
 import sounddevice as sd
