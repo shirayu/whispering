@@ -70,7 +70,6 @@ class WhisperStreamingTranscriber:
         self,
         *,
         segment: np.ndarray,
-        prompt,
     ) -> List[DecodingResult]:
         assert len(self.config.temperatures) >= 1
         t = self.config.temperatures[0]
@@ -211,7 +210,6 @@ class WhisperStreamingTranscriber:
         )
         results = self._decode_with_fallback(
             segment=segment,
-            prompt=self.buffer_tokens,
         )
         result = results[0]
 
