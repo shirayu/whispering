@@ -3,7 +3,7 @@
 import argparse
 import queue
 import sys
-from logging import DEBUG, INFO, StreamHandler, getLogger
+from logging import DEBUG, INFO, StreamHandler, basicConfig, getLogger
 from typing import Optional, Union
 
 import sounddevice as sd
@@ -94,13 +94,11 @@ def get_opts() -> argparse.Namespace:
 
 def main() -> None:
     opts = get_opts()
+    basicConfig(
+        level=DEBUG if opts.debug else INFO,
+        format="[%(asctime)s] %(module)s.%(funcName)s %(levelname)s -> %(message)s",
+    )
 
-    root_logger = getLogger()
-    root_logger.addHandler(StreamHandler(sys.stderr))
-    if opts.debug:
-        root_logger.setLevel(DEBUG)
-    else:
-        root_logger.setLevel(INFO)
     if opts.beam_size <= 0:
         opts.beam_size = None
     try:

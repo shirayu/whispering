@@ -195,7 +195,7 @@ class WhisperStreamingTranscriber:
             )
             if chunk is not None:
                 yield chunk
-            self.timestamp += float(segment_duration * HOP_LENGTH / SAMPLE_RATE)
+            self.timestamp += duration
 
         if result.temperature > 0.5:
             # do not feed the prompt tokens if a high temperature was used
@@ -217,7 +217,7 @@ class WhisperStreamingTranscriber:
         seek: int = 0
         rest_start: Optional[int] = None
         while seek < mel.shape[-1]:
-            logger.debug(seek)
+            logger.debug(f"seek={seek}, timestamp={self.timestamp}")
             segment = (
                 pad_or_trim(mel[:, :, seek:], N_FRAMES)
                 .to(self.model.device)  # type: ignore
