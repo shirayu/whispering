@@ -20,6 +20,7 @@ poetry run whisper_streaming --language ja --model base -n 20
 ```
 
 - ``-n`` sets interval of parsing. Larger values can improve accuracy but consume more memory.
+- ``--debug`` outputs logs for debug
 
 ## Tips
 
