@@ -109,10 +109,10 @@ class WhisperStreamingTranscriber:
                 and result.avg_logprob < self.config.logprob_threshold
                 for result in results
             ]
-            logger.debug(
-                f"Fall back with temperature: {t}, needs_fallback: {needs_fallback}"
-            )
             if any(needs_fallback):
+                logger.debug(
+                    f"Fall back with temperature: {t}, needs_fallback: {needs_fallback}"
+                )
                 _decode_options2: DecodingOptions = self._get_decoding_options(
                     t=t,
                     prompt=self.buffer_tokens,
@@ -127,6 +127,8 @@ class WhisperStreamingTranscriber:
                     np.nonzero(needs_fallback)[0]
                 ):
                     results[original_index] = retries[retry_index]
+            else:
+                break
         logger.debug(f"# of results: {len(results)}")
         return results
 
