@@ -109,7 +109,9 @@ class WhisperStreamingTranscriber:
                 and result.avg_logprob < self.config.logprob_threshold
                 for result in results
             ]
-            logger.debug(f"Fall back with temperature: {t}, {needs_fallback}")
+            logger.debug(
+                f"Fall back with temperature: {t}, needs_fallback: {needs_fallback}"
+            )
             if any(needs_fallback):
                 _decode_options2: DecodingOptions = self._get_decoding_options(
                     t=t,
