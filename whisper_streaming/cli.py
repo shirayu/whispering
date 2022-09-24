@@ -23,6 +23,7 @@ def transcribe_from_mic(
     sd_device: Optional[Union[int, str]],
     num_block: int,
 ) -> None:
+    logger.debug(f"WhisperConfig: {config}")
     wsp = WhisperStreamingTranscriber(config=config)
     q = queue.Queue()
 
@@ -84,6 +85,14 @@ def get_opts() -> argparse.Namespace:
         help="Number of operation unit. Larger values can improve accuracy but consume more memory.",
     )
     parser.add_argument(
+        "--temperature",
+        "-t",
+        type=float,
+        action="append",
+        default=[],
+    )
+
+    parser.add_argument(
         "--mic",
     )
     parser.add_argument(
@@ -103,6 +112,9 @@ def main() -> None:
 
     if opts.beam_size <= 0:
         opts.beam_size = None
+    if len(opts.temperature) == 0:
+        opts.temperature = [0.0, 0.2, 0.4, 0.6, 0.8, 1.0]
+
     try:
         opts.mic = int(opts.mic)
     except Exception:
@@ -113,6 +125,7 @@ def main() -> None:
         language=opts.language,
         device=opts.device,
         beam_size=opts.beam_size,
+        temperatures=opts.temperature,
     )
     transcribe_from_mic(
         config=config,
