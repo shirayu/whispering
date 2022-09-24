@@ -42,7 +42,7 @@ def transcribe_from_mic(
     ):
         idx: int = 0
         while True:
-            logger.debug(f"Segment: {idx}")
+            logger.debug(f"Segment #: {idx}, Queue: {q.qsize()}")
             segment = q.get()
             for chunk in wsp.transcribe(segment=segment):
                 print(f"{chunk.start:.2f}->{chunk.end:.2f}\t{chunk.text}")

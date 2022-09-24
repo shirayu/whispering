@@ -90,6 +90,7 @@ class WhisperStreamingTranscriber:
     ) -> List[DecodingResult]:
         assert len(self.config.temperatures) >= 1
         t = self.config.temperatures[0]
+        logger.debug(f"temperature: {t}")
 
         _decode_options1: DecodingOptions = self._get_decoding_options(
             t=t,
@@ -108,6 +109,7 @@ class WhisperStreamingTranscriber:
                 and result.avg_logprob < self.config.logprob_threshold
                 for result in results
             ]
+            logger.debug(f"Fall back with temperature: {t}, {needs_fallback}")
             if any(needs_fallback):
                 _decode_options2: DecodingOptions = self._get_decoding_options(
                     t=t,
@@ -123,6 +125,7 @@ class WhisperStreamingTranscriber:
                     np.nonzero(needs_fallback)[0]
                 ):
                     results[original_index] = retries[retry_index]
+        logger.debug(f"# of results: {len(results)}")
         return results
 
     def _get_chunk(
