@@ -45,19 +45,25 @@ poetry run whisper_streaming --language en --model tiny -n 20 --allow-padding
 
 ⚠  **No security mechanism. Please make secure with your responsibility.**
 
-Run with ``--host`` and ```--port``. You can set``-n`` and other options as use with microphone.
+Run with ``--host`` and ``--port``.
 
 ### Host
 
 ```bash
-poetry run whisper_streaming --language en --model tiny --host 0.0.0.0 --port 8000 --allow-padding
+poetry run whisper_streaming --language en --model tiny --host 0.0.0.0 --port 8000
 ```
+
+You can set ``--allow-padding`` and other options.
+(``-n`` for hosts makes no sense)
 
 ### Client
 
 ```bash
 poetry run python -m whisper_streaming.websocket_client --host ADDRESS_OF_HOST --port 8000 -n 20
 ```
+
+You can set ``-n`` and other options.
+(``--allow-padding`` fro clients makes no sense)
 
 ## Tips
 
