@@ -24,7 +24,7 @@ poetry run pip install -U torch torchaudio --extra-index-url https://download.py
 
 ```bash
 # Run in English
-poetry run whisper_streaming --language en --model base
+poetry run whisper_streaming --language en --model tiny
 ```
 
 - ``--help`` shows full options
@@ -38,25 +38,25 @@ If you want quick response, set small ``-n`` and add ``--allow-padding``.
 However, this may be at the sacrifice of accuracy.
 
 ```bash
-poetry run whisper_streaming --language en --model base -n 20 --allow-padding
+poetry run whisper_streaming --language en --model tiny -n 20 --allow-padding
 ```
 
 ## Example of web socket
 
 ⚠  **No security mechanism. Please make secure with your responsibility.**
 
-### Host
-
 Run with ``--host`` and ```--port``. You can set``-n`` and other options as use with microphone.
 
+### Host
+
 ```bash
-poetry run whisper_streaming --language en --model base --host 0.0.0.0 --port 8000
+poetry run whisper_streaming --language en --model tiny --host 0.0.0.0 --port 8000 --allow-padding
 ```
 
 ### Client
 
 ```bash
-poetry run python -m whisper_streaming.websocket_client --host ADDRESS_OF_HOST --port 8000 
+poetry run python -m whisper_streaming.websocket_client --host ADDRESS_OF_HOST --port 8000 -n 20
 ```
 
 ## Tips
