@@ -199,9 +199,9 @@ class WhisperStreamingTranscriber:
             self.timestamp += last_timestamp_position0 * self.time_precision
             yield last_timestamp_position0
         else:
-            logger.debug("Length of consecutive: 0")
             duration = segment_duration
             timestamps = tokens[timestamp_tokens.nonzero().flatten()]
+            logger.debug(f"Length of consecutive: 0, timestamps: {timestamps}")
             if len(timestamps) > 0:
                 # no consecutive timestamps but it has a timestamp; use the last one.
                 # single timestamp at the end means no speech after the last timestamp.
@@ -209,6 +209,7 @@ class WhisperStreamingTranscriber:
                     timestamps[-1].item() - self.tokenizer.timestamp_begin
                 )
                 duration = last_timestamp_position * self.time_precision
+            logger.debug(f"segment_duration: {segment_duration}, Duration: {duration}")
             chunk = self._get_chunk(
                 start=self.timestamp,
                 end=self.timestamp + duration,
@@ -281,7 +282,7 @@ class WhisperStreamingTranscriber:
                 seek += segment.shape[-1]
                 rest_start = None
             else:
-                seek += last_timestamp_position
+                seek += last_timestamp_position * self.input_stride
                 rest_start = seek
 
         logger.debug(f"Last rest_start={rest_start}")
