@@ -15,6 +15,7 @@ from whisper.tokenizer import LANGUAGES, TO_LANGUAGE_CODE
 from whisper_streaming.schema import WhisperConfig
 from whisper_streaming.serve import serve_with_websocket
 from whisper_streaming.transcriber import WhisperStreamingTranscriber
+from whisper_streaming.websocket_client import run_websocket_client
 
 logger = getLogger(__name__)
 
@@ -58,13 +59,11 @@ def get_opts() -> argparse.Namespace:
         default=None,
         choices=sorted(LANGUAGES.keys())
         + sorted([k.title() for k in TO_LANGUAGE_CODE.keys()]),
-        required=True,
     )
     parser.add_argument(
         "--model",
         type=str,
         choices=available_models(),
-        required=True,
     )
     parser.add_argument(
         "--device",
@@ -113,8 +112,27 @@ def get_opts() -> argparse.Namespace:
         "--allow-padding",
         action="store_true",
     )
+    parser.add_argument(
+        "--mode",
+        choices=["client"],
+    )
 
     return parser.parse_args()
+
+
+def get_wshiper(*, opts):
+    config = WhisperConfig(
+        model_name=opts.model,
+        language=opts.language,
+        device=opts.device,
+        beam_size=opts.beam_size,
+        temperatures=opts.temperature,
+        allow_padding=opts.allow_padding,
+    )
+
+    logger.debug(f"WhisperConfig: {config}")
+    wsp = WhisperStreamingTranscriber(config=config)
+    return wsp
 
 
 def main() -> None:
@@ -135,26 +153,30 @@ def main() -> None:
     except Exception:
         pass
 
-    config = WhisperConfig(
-        model_name=opts.model,
-        language=opts.language,
-        device=opts.device,
-        beam_size=opts.beam_size,
-        temperatures=opts.temperature,
-        allow_padding=opts.allow_padding,
-    )
-
-    logger.debug(f"WhisperConfig: {config}")
-    wsp = WhisperStreamingTranscriber(config=config)
     if opts.host is not None and opts.port is not None:
-        asyncio.run(
-            serve_with_websocket(
-                wsp=wsp,
-                host=opts.host,
-                port=opts.port,
+        if opts.mode == "client":
+            assert opts.language is None
+            assert opts.model is None
+            asyncio.run(
+                run_websocket_client(
+                    opts=opts,
+                )
             )
-        )
+        else:
+            assert opts.language is not None
+            assert opts.model is not None
+            wsp = get_wshiper(opts=opts)
+            asyncio.run(
+                serve_with_websocket(
+                    wsp=wsp,
+                    host=opts.host,
+                    port=opts.port,
+                )
+            )
     else:
+        assert opts.language is not None
+        assert opts.model is not None
+        wsp = get_wshiper(opts=opts)
         transcribe_from_mic(
             wsp=wsp,
             sd_device=opts.mic,

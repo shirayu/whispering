@@ -54,16 +54,14 @@ poetry run whisper_streaming --language en --model tiny --host 0.0.0.0 --port 80
 ```
 
 You can set ``--allow-padding`` and other options.
-(``-n`` for hosts makes no sense)
 
 ### Client
 
 ```bash
-poetry run python -m whisper_streaming.websocket_client --host ADDRESS_OF_HOST --port 8000 -n 20
+poetry run whisper_streaming --model tiny --host ADDRESS_OF_HOST --port 8000 --mode client
 ```
 
 You can set ``-n`` and other options.
-(``--allow-padding`` for clients makes no sense)
 
 ## Tips
 

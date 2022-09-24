@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
-import argparse
 import asyncio
-from logging import DEBUG, INFO, basicConfig, getLogger
+from logging import getLogger
 from typing import Optional, Union
 
 import sounddevice as sd
@@ -68,44 +67,7 @@ async def transcribe_from_mic_and_send(
                 idx += 1
 
 
-def get_opts() -> argparse.Namespace:
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "--host",
-        required=True,
-        help="host of websocker server",
-    )
-    parser.add_argument(
-        "--port",
-        type=int,
-        required=True,
-        help="Port number of websocker server",
-    )
-
-    parser.add_argument(
-        "--mic",
-    )
-    parser.add_argument(
-        "--num_block",
-        "-n",
-        type=int,
-        default=160,
-        help="Number of operation unit",
-    )
-    parser.add_argument(
-        "--debug",
-        action="store_true",
-    )
-
-    return parser.parse_args()
-
-
-async def main() -> None:
-    opts = get_opts()
-    basicConfig(
-        level=DEBUG if opts.debug else INFO,
-        format="[%(asctime)s] %(module)s.%(funcName)s:%(lineno)d %(levelname)s -> %(message)s",
-    )
+async def run_websocket_client(*, opts) -> None:
     global q
     global loop
     loop = asyncio.get_running_loop()
@@ -117,7 +79,3 @@ async def main() -> None:
         host=opts.host,
         port=opts.port,
     )
-
-
-if __name__ == "__main__":
-    asyncio.run(main())
