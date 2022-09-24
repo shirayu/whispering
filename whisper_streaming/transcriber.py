@@ -248,7 +248,7 @@ class WhisperStreamingTranscriber:
                 .to(self.model.device)  # type: ignore
                 .to(self.dtype)
             )
-            if segment.shape[-1] > mel.shape[-1]:
+            if not self.config.allow_padding and segment.shape[-1] > mel.shape[-1]:
                 logger.warning("Padding is not expected while speaking")
 
             logger.debug(
@@ -290,7 +290,7 @@ class WhisperStreamingTranscriber:
                 seek += last_timestamp_position * self.input_stride
             logger.debug(f"new seek={seek}, mel.shape: {mel.shape}")
 
-            if mel.shape[-1] - seek < N_FRAMES:
+            if (not self.config.allow_padding) and (mel.shape[-1] - seek < N_FRAMES):
                 break
 
         if mel.shape[-1] - seek <= 0:

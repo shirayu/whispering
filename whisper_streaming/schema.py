@@ -10,6 +10,7 @@ class WhisperConfig(BaseModel):
     device: str
     language: str
 
+    allow_padding: bool = False
     temperatures: List[float]
     fp16: bool = True
     compression_ratio_threshold: Optional[float] = 2.4

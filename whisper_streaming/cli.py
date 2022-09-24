@@ -109,6 +109,10 @@ def get_opts() -> argparse.Namespace:
         type=int,
         help="Port number of websocker server",
     )
+    parser.add_argument(
+        "--allow-padding",
+        action="store_true",
+    )
 
     return parser.parse_args()
 
@@ -137,6 +141,7 @@ def main() -> None:
         device=opts.device,
         beam_size=opts.beam_size,
         temperatures=opts.temperature,
+        allow_padding=opts.allow_padding,
     )
 
     logger.debug(f"WhisperConfig: {config}")
