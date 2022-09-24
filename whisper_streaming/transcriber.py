@@ -290,7 +290,7 @@ class WhisperStreamingTranscriber:
                 seek += last_timestamp_position * self.input_stride
             logger.debug(f"new seek={seek}, mel.shape: {mel.shape}")
 
-            if mel.shape[-1] < N_FRAMES:
+            if mel.shape[-1] - seek < N_FRAMES:
                 break
 
         if mel.shape[-1] - seek <= 0:
