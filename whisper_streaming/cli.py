@@ -81,8 +81,8 @@ def get_opts() -> argparse.Namespace:
         "--num_block",
         "-n",
         type=int,
-        default=20,
-        help="Number of operation unit. Larger values can improve accuracy but consume more memory.",
+        default=160,
+        help="Number of operation unit",
     )
     parser.add_argument(
         "--temperature",

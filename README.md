@@ -21,13 +21,12 @@ poetry install --only main
 poetry run pip install -U torch torchaudio --extra-index-url https://download.pytorch.org/whl/cu116
 
 # Run in English
-poetry run whisper_streaming --language en --model base -n 20
+poetry run whisper_streaming --language en --model base
 ```
 
 - ``--help`` shows full options
 - ``--language`` sets the language to transcribe. The list of languages are shown with ``poetry run whisper_streaming -h``
 - ``-t`` sets temperatures to decode. You can set several like (``-t 0.0 -t 0.1 -t 0.5``), but too many temperatures exhaust decoding time
-- ``-n`` sets interval of parsing. Larger values can improve accuracy but consume more memory.
 - ``--debug`` outputs logs for debug
 
 ## Tips
