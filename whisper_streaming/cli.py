@@ -114,6 +114,7 @@ def main() -> None:
         opts.beam_size = None
     if len(opts.temperature) == 0:
         opts.temperature = [0.0, 0.2, 0.4, 0.6, 0.8, 1.0]
+    opts.temperature = sorted(set(opts.temperature))
 
     try:
         opts.mic = int(opts.mic)
