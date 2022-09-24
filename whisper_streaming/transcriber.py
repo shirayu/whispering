@@ -67,7 +67,7 @@ class WhisperStreamingTranscriber:
     ) -> DecodingOptions:
         return DecodingOptions(
             task="transcribe",
-            language=None,
+            language=self.config.language,
             temperature=t,
             sample_len=None,
             best_of=best_of,
