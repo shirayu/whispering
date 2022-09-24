@@ -48,16 +48,17 @@ async def transcribe_from_mic_and_send(
                 try:
                     segment = await asyncio.wait_for(g(), timeout=3.0)
                 except asyncio.TimeoutError:
-                    await ws.send("dummy")
                     continue
 
                 logger.debug(f"Segment size: {len(segment)}")
                 await ws.send(segment)
                 logger.debug("Sent")
 
-                d = await ws.recv()
-                for c in json.loads(d):
-                    chunk = ParsedChunk.parse_obj(c)
+                while True:
+                    c = await ws.recv()
+                    if len(c) == 0:
+                        break
+                    chunk = ParsedChunk.parse_raw(c)
                     print(f"{chunk.start:.2f}->{chunk.end:.2f}\t{chunk.text}")
                 idx += 1
 
