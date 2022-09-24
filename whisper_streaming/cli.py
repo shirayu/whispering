@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import argparse
+import asyncio
 import queue
 from logging import DEBUG, INFO, basicConfig, getLogger
 from typing import Optional, Union
@@ -12,6 +13,7 @@ from whisper.audio import N_FRAMES, SAMPLE_RATE
 from whisper.tokenizer import LANGUAGES, TO_LANGUAGE_CODE
 
 from whisper_streaming.schema import WhisperConfig
+from whisper_streaming.serve import serve_with_websocket
 from whisper_streaming.transcriber import WhisperStreamingTranscriber
 
 logger = getLogger(__name__)
@@ -19,12 +21,10 @@ logger = getLogger(__name__)
 
 def transcribe_from_mic(
     *,
-    config: WhisperConfig,
+    wsp: WhisperStreamingTranscriber,
     sd_device: Optional[Union[int, str]],
     num_block: int,
 ) -> None:
-    logger.debug(f"WhisperConfig: {config}")
-    wsp = WhisperStreamingTranscriber(config=config)
     q = queue.Queue()
 
     def sd_callback(indata, frames, time, status):
@@ -99,6 +99,16 @@ def get_opts() -> argparse.Namespace:
         "--debug",
         action="store_true",
     )
+    parser.add_argument(
+        "--host",
+        default="0.0.0.0",
+        help="host of websocker server",
+    )
+    parser.add_argument(
+        "--port",
+        type=int,
+        help="Port number of websocker server",
+    )
 
     return parser.parse_args()
 
@@ -128,11 +138,23 @@ def main() -> None:
         beam_size=opts.beam_size,
         temperatures=opts.temperature,
     )
-    transcribe_from_mic(
-        config=config,
-        sd_device=opts.mic,
-        num_block=opts.num_block,
-    )
+
+    logger.debug(f"WhisperConfig: {config}")
+    wsp = WhisperStreamingTranscriber(config=config)
+    if opts.host is not None and opts.port is not None:
+        asyncio.run(
+            serve_with_websocket(
+                wsp=wsp,
+                host=opts.host,
+                port=opts.port,
+            )
+        )
+    else:
+        transcribe_from_mic(
+            wsp=wsp,
+            sd_device=opts.mic,
+            num_block=opts.num_block,
+        )
 
 
 if __name__ == "__main__":

@@ -11,6 +11,7 @@ python = ">=3.8,<4.0"
 whisper = {git = "https://github.com/openai/whisper.git", rev = '8cf36f3508c9acd341a45eb2364239a3d81458b9'}
 sounddevice = "^0.4.5"
 pydantic = "^1.10.2"
+websockets = "^10.3"
 
 
 [tool.poetry.group.dev.dependencies]
