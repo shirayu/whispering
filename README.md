@@ -63,7 +63,7 @@ poetry run python -m whisper_streaming.websocket_client --host ADDRESS_OF_HOST -
 ```
 
 You can set ``-n`` and other options.
-(``--allow-padding`` fro clients makes no sense)
+(``--allow-padding`` for clients makes no sense)
 
 ## Tips
 
