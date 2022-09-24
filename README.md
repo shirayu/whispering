@@ -16,8 +16,9 @@ git clone https://github.com/shirayu/whisper_streaming.git
 cd whisper_streaming
 poetry install --only main
 
-# If you use GPU with CUDA 11.6
-poetry run pip install 'torch==1.12.0+cu116' -f https://download.pytorch.org/whl/torch_stable.html
+# If you use GPU, intall proper torch with "poetry run pip install -U"
+# Example : torch for CUDA 11.6
+poetry run pip install -U torch --extra-index-url https://download.pytorch.org/whl/cu116
 
 # Run in English
 poetry run whisper_streaming --language en --model base -n 20
