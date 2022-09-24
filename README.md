@@ -35,7 +35,7 @@ poetry run whisper_streaming --language en --model tiny
 ### Parse interval
 
 If you want quick response, set small ``-n`` and add ``--allow-padding``.
-However, this may be at the sacrifice of accuracy.
+However, this may sacrifice the accuracy.
 
 ```bash
 poetry run whisper_streaming --language en --model tiny -n 20 --allow-padding
