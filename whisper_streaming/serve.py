@@ -26,8 +26,9 @@ async def serve_with_websocket_main(websocket):
 
         logger.debug(f"Message size: {len(message)}")
         segment = np.frombuffer(message, dtype=np.float32)
-        chunks = [chunk.dict() for chunk in g_wsp.transcribe(segment=segment)]
-        await websocket.send(json.dumps(chunks))
+        for chunk in g_wsp.transcribe(segment=segment):
+            await websocket.send(chunk.json())
+        await websocket.send("")
         idx += 1
 
 
