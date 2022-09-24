@@ -173,8 +173,8 @@ class WhisperStreamingTranscriber:
             logger.debug(f"Length of consecutive: {len(consecutive)}")
             last_slice = 0
             for current_slice in consecutive:
-                logger.debug(f" last_slice={last_slice}, current_slice={current_slice}")
                 sliced_tokens = tokens[last_slice:current_slice]
+                logger.debug(f" last_slice={last_slice}, current_slice={current_slice}")
                 start_timestamp_position = (
                     sliced_tokens[0].item() - self.tokenizer.timestamp_begin
                 )
@@ -232,11 +232,14 @@ class WhisperStreamingTranscriber:
         segment: np.ndarray,
     ) -> Iterator[ParsedChunk]:
         new_mel = log_mel_spectrogram(audio=segment).unsqueeze(0)
+        logger.debug(f"Incoming new_mel.shape: {new_mel.shape}")
         if self.buffer_mel is None:
             mel = new_mel
         else:
+            logger.debug(f"bufer_mel.shape: {self.buffer_mel.shape}")
             mel = torch.cat([self.buffer_mel, new_mel], dim=-1)
             self.buffer_mel = None
+        logger.debug(f"mel.shape: {mel.shape}")
 
         seek: int = 0
         while seek < mel.shape[-1]:
@@ -249,7 +252,7 @@ class WhisperStreamingTranscriber:
                 logger.warning("Padding is not expected while speaking")
 
             logger.debug(
-                f"seek={seek}, timestamp={self.timestamp}"
+                f"seek={seek}, timestamp={self.timestamp}, "
                 f"mel.shape: {mel.shape}, segment.shape: {segment.shape}"
             )
             results = self._decode_with_fallback(
@@ -290,7 +293,9 @@ class WhisperStreamingTranscriber:
             if mel.shape[-1] < N_FRAMES:
                 break
 
-        if mel.shape[-1] - seek < 0:
+        if mel.shape[-1] - seek <= 0:
+            logger.debug(f"self.buffer_mel is None ({mel.shape}, {seek})")
             return
         self.buffer_mel = mel[:, :, seek:]
+        logger.debug(f"self.buffer_mel.shape: {self.buffer_mel.shape}")
         del mel
