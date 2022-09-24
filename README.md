@@ -31,7 +31,7 @@ poetry run whisper_streaming --language en --model base
 
 ## Example of web socket
 
-⚠  **Please make secure with your responsibility.**
+⚠  **No security mechanism. Please make secure with your responsibility.**
 
 ```bash
 # Host
