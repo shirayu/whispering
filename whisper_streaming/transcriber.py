@@ -241,15 +241,16 @@ class WhisperStreamingTranscriber:
         seek: int = 0
         rest_start: Optional[int] = None
         while seek < mel.shape[-1]:
-            logger.debug(
-                f"seek={seek}, timestamp={self.timestamp}, rest_start={rest_start}"
-            )
             segment = (
                 pad_or_trim(mel[:, :, seek:], N_FRAMES)
                 .to(self.model.device)  # type: ignore
                 .to(self.dtype)
             )
 
+            logger.debug(
+                f"seek={seek}, timestamp={self.timestamp}, rest_start={rest_start},"
+                f"mel.shape: {mel.shape}, segment.shape: {segment.shape}"
+            )
             results = self._decode_with_fallback(
                 segment=segment,
             )
@@ -266,7 +267,9 @@ class WhisperStreamingTranscriber:
                 ):
                     seek += segment.shape[-1]
                     rest_start = None
-                    logger.debug(f"Skip: {segment.shape[-1]}")
+                    logger.debug(
+                        f"Skip: {segment.shape[-1]}, new seek={seek}, mel.shape: {mel.shape}"
+                    )
                     continue
 
             segment_duration = segment.shape[-1] * HOP_LENGTH / SAMPLE_RATE
@@ -284,8 +287,9 @@ class WhisperStreamingTranscriber:
             else:
                 seek += last_timestamp_position * self.input_stride
                 rest_start = seek
+            logger.debug(f"new seek={seek}, mel.shape: {mel.shape}")
 
-        logger.debug(f"Last rest_start={rest_start}")
+        logger.debug(f"Last rest_start={rest_start}, mel.shape: {mel.shape}")
         if rest_start is None:
             return
 
