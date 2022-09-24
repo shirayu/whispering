@@ -44,22 +44,28 @@ async def transcribe_from_mic_and_send(
                 async def g():
                     return await q.get()
 
-                logger.debug(f"Segment #: {idx}")
+                logger.debug(f"Loop #: {idx}")
+                segment = None
                 try:
-                    segment = await asyncio.wait_for(g(), timeout=3.0)
+                    segment = await asyncio.wait_for(g(), timeout=0.5)
                 except asyncio.TimeoutError:
-                    continue
+                    pass
+                if segment is not None:
+                    logger.debug(f"Segment size: {len(segment)}")
+                    await ws.send(segment)
+                    logger.debug("Sent")
 
-                logger.debug(f"Segment size: {len(segment)}")
-                await ws.send(segment)
-                logger.debug("Sent")
+                async def recv():
+                    return await ws.recv()
 
                 while True:
-                    c = await ws.recv()
-                    if len(c) == 0:
+                    try:
+                        c = await asyncio.wait_for(recv(), timeout=0.5)
+                        chunk = ParsedChunk.parse_raw(c)
+                        print(f"{chunk.start:.2f}->{chunk.end:.2f}\t{chunk.text}")
+                    except asyncio.TimeoutError:
                         break
-                    chunk = ParsedChunk.parse_raw(c)
-                    print(f"{chunk.start:.2f}->{chunk.end:.2f}\t{chunk.text}")
+
                 idx += 1
 
 
