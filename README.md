@@ -8,10 +8,9 @@
 Streaming transcriber with [whisper](https://github.com/openai/whisper).
 Transcribing in real time, enough machine power is needed.
 
-## Example
+## Setup
 
 ```bash
-# Setup
 git clone https://github.com/shirayu/whisper_streaming.git
 cd whisper_streaming
 poetry install --only main
@@ -19,7 +18,11 @@ poetry install --only main
 # If you use GPU, install proper torch and torchaudio with "poetry run pip install -U"
 # Example : torch for CUDA 11.6
 poetry run pip install -U torch torchaudio --extra-index-url https://download.pytorch.org/whl/cu116
+```
 
+## Example of microphone
+
+```bash
 # Run in English
 poetry run whisper_streaming --language en --model base
 ```
@@ -28,6 +31,15 @@ poetry run whisper_streaming --language en --model base
 - ``--language`` sets the language to transcribe. The list of languages are shown with ``poetry run whisper_streaming -h``
 - ``-t`` sets temperatures to decode. You can set several like (``-t 0.0 -t 0.1 -t 0.5``), but too many temperatures exhaust decoding time
 - ``--debug`` outputs logs for debug
+
+### Parse interval
+
+If you want quick response, set small ``-n`` and add ``--allow-padding``.
+However, this may be at the sacrifice of accuracy.
+
+```bash
+poetry run whisper_streaming --language en --model base -n 20 --allow-padding
+```
 
 ## Example of web socket
 
