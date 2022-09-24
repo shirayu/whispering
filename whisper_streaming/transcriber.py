@@ -236,7 +236,7 @@ class WhisperStreamingTranscriber:
         if self.buffer_mel is None:
             mel = new_mel
         else:
-            logger.debug(f"bufer_mel.shape: {self.buffer_mel.shape}")
+            logger.debug(f"buffer_mel.shape: {self.buffer_mel.shape}")
             mel = torch.cat([self.buffer_mel, new_mel], dim=-1)
             self.buffer_mel = None
         logger.debug(f"mel.shape: {mel.shape}")
