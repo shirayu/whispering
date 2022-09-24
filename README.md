@@ -19,7 +19,7 @@ poetry install --only main
 poetry run whisper_streaming --language en --model base -n 20
 ```
 
-- ``--language`` set the language to transcribe. The list of languages are shown with ``poetry run whisper_streaming -h``
+- ``--language`` sets the language to transcribe. The list of languages are shown with ``poetry run whisper_streaming -h``
 - ``-n`` sets interval of parsing. Larger values can improve accuracy but consume more memory.
 - ``--debug`` outputs logs for debug
 
