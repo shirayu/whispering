@@ -98,7 +98,7 @@ def main() -> None:
     opts = get_opts()
     basicConfig(
         level=DEBUG if opts.debug else INFO,
-        format="[%(asctime)s] %(module)s.%(funcName)s %(levelname)s -> %(message)s",
+        format="[%(asctime)s] %(module)s.%(funcName)s:%(lineno)d %(levelname)s -> %(message)s",
     )
 
     if opts.beam_size <= 0:

@@ -258,6 +258,7 @@ class WhisperStreamingTranscriber:
                 ):
                     seek += segment.shape[-1]
                     rest_start = None
+                    logger.debug(f"Skip: {segment.shape[-1]}")
                     continue
 
             segment_duration = segment.shape[-1] * HOP_LENGTH / SAMPLE_RATE
