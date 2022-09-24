@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import asyncio
-import json
 from logging import getLogger
 
 import numpy as np

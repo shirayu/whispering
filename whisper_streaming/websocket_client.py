@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import argparse
 import asyncio
-import json
 from logging import DEBUG, INFO, basicConfig, getLogger
 from typing import Optional, Union
 
