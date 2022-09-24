@@ -40,7 +40,7 @@ poetry run whisper_streaming --language en --model base --host 0.0.0.0 --port 80
 
 ```bash
 # Client
-poetry run python -m whisper_streaming.websocket_client --host ADDRES_OF_HOST --port 8000 
+poetry run python -m whisper_streaming.websocket_client --host ADDRESS_OF_HOST --port 8000 
 ```
 
 ## Tips
