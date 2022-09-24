@@ -6,7 +6,7 @@
 [![Typos](https://github.com/shirayu/whisper_streaming/actions/workflows/typos.yml/badge.svg)](https://github.com/shirayu/whisper_streaming/actions/workflows/typos.yml)
 
 Streaming transcriber with [whisper](https://github.com/openai/whisper).
-Transcribing in real time, enough machine power is needed.
+Enough machine power is needed to transcribe in real time.
 
 ## Setup
 
