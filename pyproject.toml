@@ -7,18 +7,18 @@ readme = "README.md"
 packages = [{include = "whisper_streaming"}]
 
 [tool.poetry.dependencies]
-python = ">=3.8,<4.0"
-whisper = {git = "https://github.com/openai/whisper.git", rev = '8cf36f3508c9acd341a45eb2364239a3d81458b9'}
+python = ">=3.8,<3.11"
+whisper = {git = "https://github.com/openai/whisper.git", rev = '2d3032de014c514d5c029baccb898b5342463674'}
 sounddevice = "^0.4.5"
 pydantic = "^1.10.2"
 websockets = "^10.3"
 
 
 [tool.poetry.group.dev.dependencies]
-black = "^22.8.0"
-isort = "^5.10.1"
-flake8 = "^5.0.4"
-pydocstyle = "^6.1.1"
+black = ">=22.8.0"
+isort = ">=5.10.1"
+flake8 = ">=5.0.4"
+pydocstyle = ">=6.1.1"
 
 [build-system]
 requires = ["poetry-core"]
