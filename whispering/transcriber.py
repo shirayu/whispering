@@ -17,7 +17,7 @@ from whisper.decoding import DecodingOptions, DecodingResult
 from whisper.tokenizer import get_tokenizer
 from whisper.utils import exact_div
 
-from whisper_streaming.schema import ParsedChunk, WhisperConfig
+from whispering.schema import ParsedChunk, WhisperConfig
 
 logger = getLogger(__name__)
 

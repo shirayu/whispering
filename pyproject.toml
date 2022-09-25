@@ -25,5 +25,5 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
-whisper_streaming = "whisper_streaming.cli:main"
+whispering = "whisper_streaming.cli:main"
 

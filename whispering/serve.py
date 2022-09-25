@@ -6,7 +6,7 @@ from logging import getLogger
 import numpy as np
 import websockets
 
-from whisper_streaming.transcriber import WhisperStreamingTranscriber
+from whispering.transcriber import WhisperStreamingTranscriber
 
 logger = getLogger(__name__)
 

@@ -1,7 +1,7 @@
 
 all: lint_node lint_python
 
-TARGET_DIRS:=./whisper_streaming
+TARGET_DIRS:=./whispering
 
 flake8:
 	find $(TARGET_DIRS) | grep '\.py$$' | xargs flake8

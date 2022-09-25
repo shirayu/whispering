@@ -7,7 +7,7 @@ import sounddevice as sd
 import websockets
 from whisper.audio import N_FRAMES, SAMPLE_RATE
 
-from whisper_streaming.schema import ParsedChunk
+from whispering.schema import ParsedChunk
 
 logger = getLogger(__name__)
 

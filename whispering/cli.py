@@ -12,10 +12,10 @@ from whisper import available_models
 from whisper.audio import N_FRAMES, SAMPLE_RATE
 from whisper.tokenizer import LANGUAGES, TO_LANGUAGE_CODE
 
-from whisper_streaming.schema import WhisperConfig
-from whisper_streaming.serve import serve_with_websocket
-from whisper_streaming.transcriber import WhisperStreamingTranscriber
-from whisper_streaming.websocket_client import run_websocket_client
+from whispering.schema import WhisperConfig
+from whispering.serve import serve_with_websocket
+from whispering.transcriber import WhisperStreamingTranscriber
+from whispering.websocket_client import run_websocket_client
 
 logger = getLogger(__name__)
 

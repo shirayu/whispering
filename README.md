@@ -1,20 +1,21 @@
 
-# whisper_streaming
+# Whispering
 
 [![MIT License](https://img.shields.io/apm/l/atomic-design-ui.svg?)](LICENSE)
 [![Python Versions](https://img.shields.io/badge/Python-3.8%20--%203.10-blue)](https://pypi.org/project/bunkai/)
 
-[![CI](https://github.com/shirayu/whisper_streaming/actions/workflows/ci.yml/badge.svg)](https://github.com/shirayu/whisper_streaming/actions/workflows/ci.yml)
-[![CodeQL](https://github.com/shirayu/whisper_streaming/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/shirayu/whisper_streaming/actions/workflows/codeql-analysis.yml)
-[![Typos](https://github.com/shirayu/whisper_streaming/actions/workflows/typos.yml/badge.svg)](https://github.com/shirayu/whisper_streaming/actions/workflows/typos.yml)
+[![CI](https://github.com/shirayu/whispering/actions/workflows/ci.yml/badge.svg)](https://github.com/shirayu/whispering/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/shirayu/whispering/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/shirayu/whispering/actions/workflows/codeql-analysis.yml)
+[![Typos](https://github.com/shirayu/whispering/actions/workflows/typos.yml/badge.svg)](https://github.com/shirayu/whispering/actions/workflows/typos.yml)
 
 Streaming transcriber with [whisper](https://github.com/openai/whisper).
+Former name was "whisper_streaming".
 Enough machine power is needed to transcribe in real time.
 
 ## Setup
 
 ```bash
-pip install -U git+https://github.com/shirayu/whisper_streaming.git
+pip install -U git+https://github.com/shirayu/whispering.git
 
 # If you use GPU, install proper torch and torchaudio
 # Example : torch for CUDA 11.6
@@ -25,11 +26,11 @@ pip install -U torch torchaudio --extra-index-url https://download.pytorch.org/w
 
 ```bash
 # Run in English
-whisper_streaming --language en --model tiny
+whispering --language en --model tiny
 ```
 
 - ``--help`` shows full options
-- ``--language`` sets the language to transcribe. The list of languages are shown with ``whisper_streaming -h``
+- ``--language`` sets the language to transcribe. The list of languages are shown with ``whispering -h``
 - ``-t`` sets temperatures to decode. You can set several like (``-t 0.0 -t 0.1 -t 0.5``), but too many temperatures exhaust decoding time
 - ``--debug`` outputs logs for debug
 
@@ -39,7 +40,7 @@ If you want quick response, set small ``-n`` and add ``--allow-padding``.
 However, this may sacrifice the accuracy.
 
 ```bash
-whisper_streaming --language en --model tiny -n 20 --allow-padding
+whispering --language en --model tiny -n 20 --allow-padding
 ```
 
 ## Example of web socket
@@ -51,7 +52,7 @@ Run with ``--host`` and ``--port``.
 ### Host
 
 ```bash
-whisper_streaming --language en --model tiny --host 0.0.0.0 --port 8000
+whispering --language en --model tiny --host 0.0.0.0 --port 8000
 ```
 
 You can set ``--allow-padding`` and other options.
@@ -59,7 +60,7 @@ You can set ``--allow-padding`` and other options.
 ### Client
 
 ```bash
-whisper_streaming --model tiny --host ADDRESS_OF_HOST --port 8000 --mode client
+whispering --model tiny --host ADDRESS_OF_HOST --port 8000 --mode client
 ```
 
 You can set ``-n`` and other options.
