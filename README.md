@@ -11,13 +11,11 @@ Enough machine power is needed to transcribe in real time.
 ## Setup
 
 ```bash
-git clone https://github.com/shirayu/whisper_streaming.git
-cd whisper_streaming
-poetry install --only main
+pip install -U git+https://github.com/shirayu/whisper_streaming.git
 
 # If you use GPU, install proper torch and torchaudio with "poetry run pip install -U"
 # Example : torch for CUDA 11.6
-poetry run pip install -U torch torchaudio --extra-index-url https://download.pytorch.org/whl/cu116
+pip install -U torch torchaudio --extra-index-url https://download.pytorch.org/whl/cu116
 ```
 
 ## Example of microphone
