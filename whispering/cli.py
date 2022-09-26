@@ -116,6 +116,10 @@ def get_opts() -> argparse.Namespace:
         "--mode",
         choices=["client"],
     )
+    parser.add_argument(
+        "--show-devices",
+        action="store_true",
+    )
 
     return parser.parse_args()
 
@@ -137,6 +141,15 @@ def get_wshiper(*, opts):
 
 def main() -> None:
     opts = get_opts()
+
+    if(opts.show_devices) :
+        devices = sd.query_devices()
+        for i, device in enumerate(devices):
+            if(device["max_input_channels"] > 0) :
+                print(f"{i}: {device['name']}")
+
+        return
+
     basicConfig(
         level=DEBUG if opts.debug else INFO,
         format="[%(asctime)s] %(module)s.%(funcName)s:%(lineno)d %(levelname)s -> %(message)s",
