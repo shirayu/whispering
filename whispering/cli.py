@@ -120,8 +120,19 @@ def get_opts() -> argparse.Namespace:
         "--show-devices",
         action="store_true",
     )
+    opts = parser.parse_args()
 
-    return parser.parse_args()
+    if opts.beam_size <= 0:
+        opts.beam_size = None
+    if len(opts.temperature) == 0:
+        opts.temperature = [0.0, 0.2, 0.4, 0.6, 0.8, 1.0]
+    opts.temperature = sorted(set(opts.temperature))
+
+    try:
+        opts.mic = int(opts.mic)
+    except Exception:
+        pass
+    return opts
 
 
 def get_wshiper(*, opts):
@@ -139,32 +150,23 @@ def get_wshiper(*, opts):
     return wsp
 
 
+def show_devices():
+    devices = sd.query_devices()
+    for i, device in enumerate(devices):
+        if device["max_input_channels"] > 0:
+            print(f"{i}: {device['name']}")
+
+
 def main() -> None:
     opts = get_opts()
-
-    if opts.show_devices:
-        devices = sd.query_devices()
-        for i, device in enumerate(devices):
-            if device["max_input_channels"] > 0:
-                print(f"{i}: {device['name']}")
-
-        return
 
     basicConfig(
         level=DEBUG if opts.debug else INFO,
         format="[%(asctime)s] %(module)s.%(funcName)s:%(lineno)d %(levelname)s -> %(message)s",
     )
 
-    if opts.beam_size <= 0:
-        opts.beam_size = None
-    if len(opts.temperature) == 0:
-        opts.temperature = [0.0, 0.2, 0.4, 0.6, 0.8, 1.0]
-    opts.temperature = sorted(set(opts.temperature))
-
-    try:
-        opts.mic = int(opts.mic)
-    except Exception:
-        pass
+    if opts.show_devices:
+        return show_devices()
 
     if opts.host is not None and opts.port is not None:
         if opts.mode == "client":
