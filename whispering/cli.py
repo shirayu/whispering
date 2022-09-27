@@ -142,10 +142,10 @@ def get_wshiper(*, opts):
 def main() -> None:
     opts = get_opts()
 
-    if(opts.show_devices) :
+    if opts.show_devices:
         devices = sd.query_devices()
         for i, device in enumerate(devices):
-            if(device["max_input_channels"] > 0) :
+            if device["max_input_channels"] > 0:
                 print(f"{i}: {device['name']}")
 
         return
