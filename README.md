@@ -2,7 +2,7 @@
 # Whispering
 
 [![MIT License](https://img.shields.io/apm/l/atomic-design-ui.svg?)](LICENSE)
-[![Python Versions](https://img.shields.io/badge/Python-3.8%20--%203.10-blue)](https://pypi.org/project/bunkai/)
+![Python Versions](https://img.shields.io/badge/Python-3.8%20--%203.10-blue)
 
 [![CI](https://github.com/shirayu/whispering/actions/workflows/ci.yml/badge.svg)](https://github.com/shirayu/whispering/actions/workflows/ci.yml)
 [![CodeQL](https://github.com/shirayu/whispering/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/shirayu/whispering/actions/workflows/codeql-analysis.yml)
