@@ -85,25 +85,25 @@ class WhisperStreamingTranscriber:
         segment: np.ndarray,
         ctx: Context,
     ) -> List[DecodingResult]:
-        assert len(self.config.temperatures) >= 1
-        t = self.config.temperatures[0]
+        assert len(ctx.temperatures) >= 1
+        t = ctx.temperatures[0]
         logger.debug(f"temperature: {t}")
 
         _decode_options1: DecodingOptions = self._get_decoding_options(
             t=t,
             prompt=ctx.buffer_tokens,
-            beam_size=self.config.beam_size,
+            beam_size=ctx.beam_size,
             patience=None,
             best_of=None,
         )
         results: List[DecodingResult] = self.model.decode(segment, _decode_options1)  # type: ignore
 
-        for t in self.config.temperatures[1:]:
+        for t in ctx.temperatures[1:]:
             needs_fallback = [
-                self.config.compression_ratio_threshold is not None
-                and result.compression_ratio > self.config.compression_ratio_threshold
-                or self.config.logprob_threshold is not None
-                and result.avg_logprob < self.config.logprob_threshold
+                ctx.compression_ratio_threshold is not None
+                and result.compression_ratio > ctx.compression_ratio_threshold
+                or ctx.logprob_threshold is not None
+                and result.avg_logprob < ctx.logprob_threshold
                 for result in results
             ]
             if any(needs_fallback):
@@ -114,8 +114,8 @@ class WhisperStreamingTranscriber:
                     t=t,
                     prompt=ctx.buffer_tokens,
                     beam_size=None,
-                    patience=0.0,
-                    best_of=self.config.best_of,
+                    patience=ctx.patience,
+                    best_of=ctx.best_of,
                 )
                 retries: List[DecodingResult] = self.model.decode(
                     segment[needs_fallback], _decode_options2  # type: ignore
@@ -221,7 +221,7 @@ class WhisperStreamingTranscriber:
                 yield chunk
             ctx.timestamp += duration
 
-        if result.temperature > self.config.buffer_threshold:
+        if result.temperature > ctx.buffer_threshold:
             # do not feed the prompt tokens if a high temperature was used
             del ctx.buffer_tokens
             ctx.buffer_tokens = []
@@ -250,7 +250,7 @@ class WhisperStreamingTranscriber:
                 .to(self.model.device)  # type: ignore
                 .to(self.dtype)
             )
-            if not self.config.allow_padding and segment.shape[-1] > mel.shape[-1]:
+            if not ctx.allow_padding and segment.shape[-1] > mel.shape[-1]:
                 logger.warning("Padding is not expected while speaking")
 
             logger.debug(
@@ -267,10 +267,10 @@ class WhisperStreamingTranscriber:
                 f"avg_logprob={result.avg_logprob:.2f}"
             )
 
-            if self.config.no_speech_threshold is not None:
-                if (result.no_speech_prob > self.config.no_speech_threshold) and not (
-                    self.config.logprob_threshold is not None
-                    and result.avg_logprob > self.config.logprob_threshold
+            if ctx.no_speech_threshold is not None:
+                if (result.no_speech_prob > ctx.no_speech_threshold) and not (
+                    ctx.logprob_threshold is not None
+                    and result.avg_logprob > ctx.logprob_threshold
                 ):
                     seek += segment.shape[-1]
                     logger.debug(
@@ -295,7 +295,7 @@ class WhisperStreamingTranscriber:
                 seek += last_timestamp_position * self.input_stride
             logger.debug(f"new seek={seek}, mel.shape: {mel.shape}")
 
-            if (not self.config.allow_padding) and (mel.shape[-1] - seek < N_FRAMES):
+            if (not ctx.allow_padding) and (mel.shape[-1] - seek < N_FRAMES):
                 break
 
         if mel.shape[-1] - seek <= 0:

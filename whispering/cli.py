@@ -25,6 +25,7 @@ def transcribe_from_mic(
     wsp: WhisperStreamingTranscriber,
     sd_device: Optional[Union[int, str]],
     num_block: int,
+    ctx: Context,
 ) -> None:
     q = queue.Queue()
 
@@ -33,7 +34,6 @@ def transcribe_from_mic(
             logger.warning(status)
         q.put(indata.ravel())
 
-    ctx: Context = Context()
     logger.info("Ready to transcribe")
     with sd.InputStream(
         samplerate=SAMPLE_RATE,
@@ -136,19 +136,26 @@ def get_opts() -> argparse.Namespace:
     return opts
 
 
-def get_wshiper(*, opts):
+def get_wshiper(*, opts) -> WhisperStreamingTranscriber:
     config = WhisperConfig(
         model_name=opts.model,
         language=opts.language,
         device=opts.device,
-        beam_size=opts.beam_size,
-        temperatures=opts.temperature,
-        allow_padding=opts.allow_padding,
     )
 
     logger.debug(f"WhisperConfig: {config}")
     wsp = WhisperStreamingTranscriber(config=config)
     return wsp
+
+
+def get_context(*, opts) -> Context:
+    ctx = Context(
+        beam_size=opts.beam_size,
+        temperatures=opts.temperature,
+        allow_padding=opts.allow_padding,
+    )
+    logger.debug(f"Context: {ctx}")
+    return ctx
 
 
 def show_devices():
@@ -182,21 +189,25 @@ def main() -> None:
             assert opts.language is not None
             assert opts.model is not None
             wsp = get_wshiper(opts=opts)
+            ctx: Context = get_context(opts=opts)
             asyncio.run(
                 serve_with_websocket(
                     wsp=wsp,
                     host=opts.host,
                     port=opts.port,
+                    ctx=ctx,
                 )
             )
     else:
         assert opts.language is not None
         assert opts.model is not None
         wsp = get_wshiper(opts=opts)
+        ctx: Context = get_context(opts=opts)
         transcribe_from_mic(
             wsp=wsp,
             sd_device=opts.mic,
             num_block=opts.num_block,
+            ctx=ctx,
         )
 
 
