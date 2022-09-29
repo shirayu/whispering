@@ -93,7 +93,7 @@ class WhisperStreamingTranscriber:
             t=t,
             prompt=ctx.buffer_tokens,
             beam_size=ctx.beam_size,
-            patience=None,
+            patience=ctx.patience,
             best_of=None,
         )
         results: List[DecodingResult] = self.model.decode(segment, _decode_options1)  # type: ignore
@@ -114,7 +114,7 @@ class WhisperStreamingTranscriber:
                     t=t,
                     prompt=ctx.buffer_tokens,
                     beam_size=None,
-                    patience=ctx.patience,
+                    patience=None,
                     best_of=ctx.best_of,
                 )
                 retries: List[DecodingResult] = self.model.decode(
