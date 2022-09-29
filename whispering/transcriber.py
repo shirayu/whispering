@@ -58,7 +58,7 @@ class WhisperStreamingTranscriber:
         t,
         prompt,
         beam_size: Optional[int],
-        patience: float,
+        patience: Optional[float],
         best_of: Optional[int],
     ) -> DecodingOptions:
         return DecodingOptions(
@@ -93,7 +93,7 @@ class WhisperStreamingTranscriber:
             t=t,
             prompt=ctx.buffer_tokens,
             beam_size=self.config.beam_size,
-            patience=0.0,
+            patience=None,
             best_of=None,
         )
         results: List[DecodingResult] = self.model.decode(segment, _decode_options1)  # type: ignore
