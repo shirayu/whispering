@@ -3,7 +3,7 @@
 from typing import List, Optional
 
 import torch
-from pydantic import BaseModel
+from pydantic import BaseModel, root_validator
 
 
 class WhisperConfig(BaseModel):
@@ -23,6 +23,15 @@ class WhisperConfig(BaseModel):
     logprob_threshold: Optional[float] = -1.0
     compression_ratio_threshold: Optional[float] = 2.4
     buffer_threshold: Optional[float] = 0.5
+
+    @root_validator
+    def validate_model_name(cls, values):
+        if values["model_name"].endswith(".en") and values["language"] not in {
+            "en",
+            "English",
+        }:
+            raise ValueError("English only model")
+        return values
 
 
 class Context(BaseModel, arbitrary_types_allowed=True):
