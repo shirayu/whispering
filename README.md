@@ -61,7 +61,7 @@ You can set ``--allow-padding`` and other options.
 ### Client
 
 ```bash
-whispering --model tiny --host ADDRESS_OF_HOST --port 8000 --mode client
+whispering --host ADDRESS_OF_HOST --port 8000 --mode client
 ```
 
 You can set ``-n`` and other options.
