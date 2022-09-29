@@ -3,15 +3,18 @@
 import argparse
 import asyncio
 import queue
+import sys
 from logging import DEBUG, INFO, basicConfig, getLogger
 from typing import Optional, Union
 
 import sounddevice as sd
 import torch
+from transformers.pipelines.text2text_generation import enum
 from whisper import available_models
 from whisper.audio import N_FRAMES, SAMPLE_RATE
 from whisper.tokenizer import LANGUAGES, TO_LANGUAGE_CODE
 
+from whispering.pbar import ProgressBar
 from whispering.schema import Context, WhisperConfig
 from whispering.serve import serve_with_websocket
 from whispering.transcriber import WhisperStreamingTranscriber
@@ -26,6 +29,7 @@ def transcribe_from_mic(
     sd_device: Optional[Union[int, str]],
     num_block: int,
     ctx: Context,
+    no_progress: bool,
 ) -> None:
     q = queue.Queue()
 
@@ -46,10 +50,35 @@ def transcribe_from_mic(
         idx: int = 0
         while True:
             logger.debug(f"Segment #: {idx}, The rest of queue: {q.qsize()}")
-            segment = q.get()
+
+            if no_progress:
+                segment = q.get()
+            else:
+                pbar_thread = ProgressBar(num_block=num_block)
+                try:
+                    segment = q.get()
+                except KeyboardInterrupt:
+                    pbar_thread.kill()
+                    return
+                pbar_thread.kill()
+
+            logger.debug(f"Got. The rest of queue: {q.qsize()}")
+            if not no_progress:
+                sys.stderr.write("Analyzing")
+                sys.stderr.flush()
+
             for chunk in wsp.transcribe(segment=segment, ctx=ctx):
+                if not no_progress:
+                    sys.stderr.write("\r")
+                    sys.stderr.flush()
                 print(f"{chunk.start:.2f}->{chunk.end:.2f}\t{chunk.text}")
+                if not no_progress:
+                    sys.stderr.write("Analyzing")
+                    sys.stderr.flush()
             idx += 1
+            if not no_progress:
+                sys.stderr.write("\r")
+                sys.stderr.flush()
 
 
 def get_opts() -> argparse.Namespace:
@@ -119,6 +148,10 @@ def get_opts() -> argparse.Namespace:
     )
     parser.add_argument(
         "--show-devices",
+        action="store_true",
+    )
+    parser.add_argument(
+        "--no-progress",
         action="store_true",
     )
     opts = parser.parse_args()
@@ -207,6 +240,7 @@ def main() -> None:
             wsp=wsp,
             sd_device=opts.mic,
             num_block=opts.num_block,
+            no_progress=opts.no_progress,
             ctx=ctx,
         )
 

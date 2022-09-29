@@ -514,7 +514,7 @@ resolved_reference = "62fe7f1009a534986ac1d32a4aef8c244d029c28"
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.8,<3.11"
-content-hash = "2022c2468c9ad210bff4327f3f0672fa471eda310aaae2c62304fa5c297593dc"
+content-hash = "d041d21a202339f405cc37076403f92135ee1f113cdfece5a78c9ee12374be7b"
 
 [metadata.files]
 black = [

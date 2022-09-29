@@ -12,6 +12,7 @@ whisper = {git = "https://github.com/openai/whisper.git", rev = '62fe7f1009a5349
 sounddevice = "^0.4.5"
 pydantic = "^1.10.2"
 websockets = "^10.3"
+tqdm = "*"
 
 
 [tool.poetry.group.dev.dependencies]
