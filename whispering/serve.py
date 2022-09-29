@@ -6,7 +6,7 @@ from logging import getLogger
 import numpy as np
 import websockets
 
-from whispering.transcriber import WhisperStreamingTranscriber
+from whispering.transcriber import Context, WhisperStreamingTranscriber
 
 logger = getLogger(__name__)
 
@@ -14,6 +14,7 @@ logger = getLogger(__name__)
 async def serve_with_websocket_main(websocket):
     global g_wsp
     idx: int = 0
+    ctx: Context = Context()
 
     while True:
         logger.debug(f"Segment #: {idx}")
@@ -25,7 +26,7 @@ async def serve_with_websocket_main(websocket):
 
         logger.debug(f"Message size: {len(message)}")
         segment = np.frombuffer(message, dtype=np.float32)
-        for chunk in g_wsp.transcribe(segment=segment):
+        for chunk in g_wsp.transcribe(segment=segment, ctx=ctx):
             await websocket.send(chunk.json())
         idx += 1
 

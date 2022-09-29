@@ -2,6 +2,7 @@
 
 from typing import List, Optional
 
+import torch
 from pydantic import BaseModel
 
 
@@ -21,6 +22,12 @@ class WhisperConfig(BaseModel):
     no_speech_threshold: Optional[float] = 0.6
     logprob_threshold: Optional[float] = -1.0
     compression_ratio_threshold: Optional[float] = 2.4
+
+
+class Context(BaseModel, arbitrary_types_allowed=True):
+    timestamp: float = 0.0
+    buffer_tokens: List[torch.Tensor] = []
+    buffer_mel: Optional[torch.Tensor] = None
 
 
 class ParsedChunk(BaseModel):

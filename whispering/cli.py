@@ -12,7 +12,7 @@ from whisper import available_models
 from whisper.audio import N_FRAMES, SAMPLE_RATE
 from whisper.tokenizer import LANGUAGES, TO_LANGUAGE_CODE
 
-from whispering.schema import WhisperConfig
+from whispering.schema import Context, WhisperConfig
 from whispering.serve import serve_with_websocket
 from whispering.transcriber import WhisperStreamingTranscriber
 from whispering.websocket_client import run_websocket_client
@@ -33,6 +33,7 @@ def transcribe_from_mic(
             logger.warning(status)
         q.put(indata.ravel())
 
+    ctx: Context = Context()
     logger.info("Ready to transcribe")
     with sd.InputStream(
         samplerate=SAMPLE_RATE,
@@ -46,7 +47,7 @@ def transcribe_from_mic(
         while True:
             logger.debug(f"Segment #: {idx}, The rest of queue: {q.qsize()}")
             segment = q.get()
-            for chunk in wsp.transcribe(segment=segment):
+            for chunk in wsp.transcribe(segment=segment, ctx=ctx):
                 print(f"{chunk.start:.2f}->{chunk.end:.2f}\t{chunk.text}")
             idx += 1
 
