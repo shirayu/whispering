@@ -221,7 +221,7 @@ class WhisperStreamingTranscriber:
                 yield chunk
             ctx.timestamp += duration
 
-        if result.temperature > 0.5:
+        if result.temperature > self.config.buffer_threshold:
             # do not feed the prompt tokens if a high temperature was used
             del ctx.buffer_tokens
             ctx.buffer_tokens = []
