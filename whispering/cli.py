@@ -54,7 +54,9 @@ def transcribe_from_mic(
             if no_progress:
                 segment = q.get()
             else:
-                pbar_thread = ProgressBar(num_block=num_block)
+                pbar_thread = ProgressBar(
+                    num_block=num_block,  # TODO: set more accurate value
+                )
                 try:
                     segment = q.get()
                 except KeyboardInterrupt:
