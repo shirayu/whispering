@@ -9,7 +9,6 @@ from typing import Optional, Union
 
 import sounddevice as sd
 import torch
-from transformers.pipelines.text2text_generation import enum
 from whisper import available_models
 from whisper.audio import N_FRAMES, SAMPLE_RATE
 from whisper.tokenizer import LANGUAGES, TO_LANGUAGE_CODE
