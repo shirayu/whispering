@@ -508,13 +508,13 @@ dev = ["pytest"]
 [package.source]
 type = "git"
 url = "https://github.com/openai/whisper.git"
-reference = '62fe7f1009a534986ac1d32a4aef8c244d029c28'
-resolved_reference = "62fe7f1009a534986ac1d32a4aef8c244d029c28"
+reference = '0b1ba3d46ebf7fe6f953acfd8cad62a4f851b49f'
+resolved_reference = "0b1ba3d46ebf7fe6f953acfd8cad62a4f851b49f"
 
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.8,<3.11"
-content-hash = "d041d21a202339f405cc37076403f92135ee1f113cdfece5a78c9ee12374be7b"
+content-hash = "f5395ffab6ce7d95246143218e948308d6614929f375489eb2b94a863e15fcc4"
 
 [metadata.files]
 black = [
