@@ -18,6 +18,7 @@ from whisper.tokenizer import get_tokenizer
 from whisper.utils import exact_div
 
 from whispering.schema import Context, ParsedChunk, WhisperConfig
+from whispering.vad import VAD
 
 logger = getLogger(__name__)
 
@@ -51,6 +52,7 @@ class WhisperStreamingTranscriber:
         self.time_precision: Final[float] = (
             self.input_stride * HOP_LENGTH / SAMPLE_RATE
         )  # time per output token: 0.02 (seconds)
+        self.vad = VAD()
 
     def _get_decoding_options(
         self,
@@ -233,6 +235,9 @@ class WhisperStreamingTranscriber:
         segment: np.ndarray,
         ctx: Context,
     ) -> Iterator[ParsedChunk]:
+        vad_probs = self.vad(segment)
+        logger.debug(f"{vad_probs}")
+
         new_mel = log_mel_spectrogram(audio=segment).unsqueeze(0)
         logger.debug(f"Incoming new_mel.shape: {new_mel.shape}")
         if ctx.buffer_mel is None:
