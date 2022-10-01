@@ -203,7 +203,10 @@ class WhisperStreamingTranscriber:
             duration = segment_duration
             timestamps = tokens[timestamp_tokens.nonzero().flatten()]
             logger.debug(f"Length of consecutive: 0, timestamps: {timestamps}")
-            if len(timestamps) > 0:
+            if (
+                len(timestamps) > 0
+                and timestamps[-1].item() != self.tokenizer.timestamp_begin
+            ):
                 # no consecutive timestamps but it has a timestamp; use the last one.
                 # single timestamp at the end means no speech after the last timestamp.
                 last_timestamp_position = (
