@@ -214,11 +214,14 @@ def main() -> None:
         if opts.mode == "client":
             assert opts.language is None
             assert opts.model is None
-            asyncio.run(
-                run_websocket_client(
-                    opts=opts,
+            try:
+                asyncio.run(
+                    run_websocket_client(
+                        opts=opts,
+                    )
                 )
-            )
+            except KeyboardInterrupt:
+                pass
         else:
             assert opts.language is not None
             assert opts.model is not None
