@@ -45,6 +45,9 @@ However, this may sacrifice the accuracy.
 whispering --language en --model tiny -n 20 --allow-padding
 ```
 
+Without ``--allow-padding``, whispering just performs VAD for the period,
+and when it is predicted as "silence", it will not be passed to whisper.
+
 ## Example of web socket
 
 ⚠  **No security mechanism. Please make secure with your responsibility.**

@@ -158,7 +158,7 @@ def get_opts() -> argparse.Namespace:
         "--num_block",
         "-n",
         type=int,
-        default=160,
+        default=20,
         help="Number of operation unit",
     )
     group_misc.add_argument(
