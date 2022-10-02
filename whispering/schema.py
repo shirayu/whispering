@@ -27,6 +27,7 @@ class Context(BaseModel, arbitrary_types_allowed=True):
     timestamp: float = 0.0
     buffer_tokens: List[torch.Tensor] = []
     buffer_mel: Optional[torch.Tensor] = None
+    vad: bool = True
 
     temperatures: List[float]
     allow_padding: bool = False

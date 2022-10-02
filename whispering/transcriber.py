@@ -233,17 +233,19 @@ class WhisperStreamingTranscriber:
         ctx: Context,
     ) -> Iterator[ParsedChunk]:
         logger.debug(f"{len(audio)}")
-        x = [
-            v
-            for v in self.vad(
-                audio=audio,
-                total_block_number=1,
-            )
-        ]
-        if len(x) == 0:  # No speech
-            logger.debug("No speech")
-            ctx.timestamp += len(audio) / N_FRAMES * self.duration_pre_one_mel
-            return
+
+        if not ctx.vad:
+            x = [
+                v
+                for v in self.vad(
+                    audio=audio,
+                    total_block_number=1,
+                )
+            ]
+            if len(x) == 0:  # No speech
+                logger.debug("No speech")
+                ctx.timestamp += len(audio) / N_FRAMES * self.duration_pre_one_mel
+                return
 
         new_mel = log_mel_spectrogram(audio=audio)
         logger.debug(f"Incoming new_mel.shape: {new_mel.shape}")

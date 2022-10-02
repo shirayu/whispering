@@ -155,6 +155,10 @@ def get_opts() -> argparse.Namespace:
         "--no-progress",
         action="store_true",
     )
+    parser.add_argument(
+        "--no-vad",
+        action="store_true",
+    )
     opts = parser.parse_args()
 
     if opts.beam_size <= 0:
@@ -187,6 +191,7 @@ def get_context(*, opts) -> Context:
         beam_size=opts.beam_size,
         temperatures=opts.temperature,
         allow_padding=opts.allow_padding,
+        vad=not opts.no_vad,
     )
     logger.debug(f"Context: {ctx}")
     return ctx
