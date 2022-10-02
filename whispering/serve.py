@@ -28,6 +28,19 @@ async def serve_with_websocket_main(websocket):
 
         if isinstance(message, str):
             logger.debug(f"Got str: {message}")
+            d = json.loads(message)
+            v = d.get("context")
+            if v is not None:
+                ctx = Context.parse_obj(v)
+            else:
+                await websocket.send(
+                    json.dumps(
+                        {
+                            "error": "unsupported message",
+                        }
+                    )
+                )
+                return
             continue
 
         logger.debug(f"Message size: {len(message)}")
