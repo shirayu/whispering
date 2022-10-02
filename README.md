@@ -38,15 +38,16 @@ whispering --language en --model tiny
 
 ### Parse interval
 
+Without ``--allow-padding``, whispering just performs VAD for the period,
+and when it is predicted as "silence", it will not be passed to whisper.
+If you want to change the VAD interval, change ``-n``.
+
 If you want quick response, set small ``-n`` and add ``--allow-padding``.
 However, this may sacrifice the accuracy.
 
 ```bash
 whispering --language en --model tiny -n 20 --allow-padding
 ```
-
-Without ``--allow-padding``, whispering just performs VAD for the period,
-and when it is predicted as "silence", it will not be passed to whisper.
 
 ## Example of web socket
 
