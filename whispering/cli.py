@@ -235,10 +235,14 @@ def main() -> None:
     if opts.show_devices:
         return show_devices()
 
-    if opts.host is not None and opts.port is not None and opts.mode != Mode.client:
-        opts.mode = Mode.server
+    if (
+        opts.host is not None
+        and opts.port is not None
+        and opts.mode != Mode.client.value
+    ):
+        opts.mode = Mode.server.value
 
-    if opts.mode == Mode.client:
+    if opts.mode == Mode.client.value:
         assert opts.language is None
         assert opts.model is None
         try:
@@ -249,7 +253,7 @@ def main() -> None:
             )
         except KeyboardInterrupt:
             pass
-    elif opts.mode == Mode.server:
+    elif opts.mode == Mode.server.value:
         assert opts.language is not None
         assert opts.model is not None
         wsp = get_wshiper(opts=opts)
