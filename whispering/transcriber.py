@@ -3,9 +3,11 @@
 from logging import getLogger
 from typing import Final, Iterator, Optional, Union
 
+import numpy as np
 import torch
 from whisper import Whisper, load_model
 from whisper.audio import (
+    CHUNK_LENGTH,
     HOP_LENGTH,
     N_FRAMES,
     SAMPLE_RATE,
@@ -17,6 +19,7 @@ from whisper.tokenizer import get_tokenizer
 from whisper.utils import exact_div
 
 from whispering.schema import Context, ParsedChunk, WhisperConfig
+from whispering.vad import VAD
 
 logger = getLogger(__name__)
 
@@ -50,6 +53,8 @@ class WhisperStreamingTranscriber:
         self.time_precision: Final[float] = (
             self.input_stride * HOP_LENGTH / SAMPLE_RATE
         )  # time per output token: 0.02 (seconds)
+        self.duration_pre_one_mel: Final[float] = CHUNK_LENGTH / HOP_LENGTH
+        self.vad = VAD()
 
     def _get_decoding_options(
         self,
@@ -224,10 +229,25 @@ class WhisperStreamingTranscriber:
     def transcribe(
         self,
         *,
-        segment: torch.Tensor,
+        audio: np.ndarray,
         ctx: Context,
     ) -> Iterator[ParsedChunk]:
-        new_mel = log_mel_spectrogram(audio=segment)
+        logger.debug(f"{len(audio)}")
+
+        if not ctx.vad:
+            x = [
+                v
+                for v in self.vad(
+                    audio=audio,
+                    total_block_number=1,
+                )
+            ]
+            if len(x) == 0:  # No speech
+                logger.debug("No speech")
+                ctx.timestamp += len(audio) / N_FRAMES * self.duration_pre_one_mel
+                return
+
+        new_mel = log_mel_spectrogram(audio=audio)
         logger.debug(f"Incoming new_mel.shape: {new_mel.shape}")
         if ctx.buffer_mel is None:
             mel = new_mel
@@ -239,7 +259,7 @@ class WhisperStreamingTranscriber:
 
         seek: int = 0
         while seek < mel.shape[-1]:
-            segment = (
+            segment: torch.Tensor = (
                 pad_or_trim(mel[:, seek:], N_FRAMES)
                 .to(self.model.device)  # type: ignore
                 .to(self.dtype)

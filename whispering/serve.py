@@ -21,7 +21,7 @@ async def serve_with_websocket_main(websocket):
     )
 
     while True:
-        logger.debug(f"Segment #: {idx}")
+        logger.debug(f"Audio #: {idx}")
         try:
             message = await websocket.recv()
         except ConnectionClosedOK:
@@ -32,9 +32,9 @@ async def serve_with_websocket_main(websocket):
             continue
 
         logger.debug(f"Message size: {len(message)}")
-        segment = np.frombuffer(message, dtype=np.float32)
+        audio = np.frombuffer(message, dtype=np.float32)
         for chunk in g_wsp.transcribe(
-            segment=segment,  # type: ignore
+            audio=audio,  # type: ignore
             ctx=ctx,
         ):
             await websocket.send(chunk.json())

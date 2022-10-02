@@ -48,16 +48,16 @@ def transcribe_from_mic(
     ):
         idx: int = 0
         while True:
-            logger.debug(f"Segment #: {idx}, The rest of queue: {q.qsize()}")
+            logger.debug(f"Audio #: {idx}, The rest of queue: {q.qsize()}")
 
             if no_progress:
-                segment = q.get()
+                audio = q.get()
             else:
                 pbar_thread = ProgressBar(
                     num_block=num_block,  # TODO: set more accurate value
                 )
                 try:
-                    segment = q.get()
+                    audio = q.get()
                 except KeyboardInterrupt:
                     pbar_thread.kill()
                     return
@@ -68,7 +68,7 @@ def transcribe_from_mic(
                 sys.stderr.write("Analyzing")
                 sys.stderr.flush()
 
-            for chunk in wsp.transcribe(segment=segment, ctx=ctx):
+            for chunk in wsp.transcribe(audio=audio, ctx=ctx):
                 if not no_progress:
                     sys.stderr.write("\r")
                     sys.stderr.flush()
@@ -155,6 +155,10 @@ def get_opts() -> argparse.Namespace:
         "--no-progress",
         action="store_true",
     )
+    parser.add_argument(
+        "--no-vad",
+        action="store_true",
+    )
     opts = parser.parse_args()
 
     if opts.beam_size <= 0:
@@ -187,6 +191,7 @@ def get_context(*, opts) -> Context:
         beam_size=opts.beam_size,
         temperatures=opts.temperature,
         allow_padding=opts.allow_padding,
+        vad=not opts.no_vad,
     )
     logger.debug(f"Context: {ctx}")
     return ctx

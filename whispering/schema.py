@@ -2,6 +2,7 @@
 
 from typing import List, Optional
 
+import numpy as np
 import torch
 from pydantic import BaseModel, root_validator
 
@@ -26,6 +27,7 @@ class Context(BaseModel, arbitrary_types_allowed=True):
     timestamp: float = 0.0
     buffer_tokens: List[torch.Tensor] = []
     buffer_mel: Optional[torch.Tensor] = None
+    vad: bool = True
 
     temperatures: List[float]
     allow_padding: bool = False
@@ -50,3 +52,9 @@ class ParsedChunk(BaseModel):
     avg_logprob: float
     compression_ratio: float
     no_speech_prob: float
+
+
+class SpeechSegment(BaseModel, arbitrary_types_allowed=True):
+    start_block_idx: int
+    end_block_idx: int
+    audio: np.ndarray
