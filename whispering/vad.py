@@ -2,6 +2,7 @@
 
 from typing import Iterator
 
+import numpy as np
 import torch
 from whisper.audio import N_FRAMES, SAMPLE_RATE
 
@@ -20,10 +21,10 @@ class VAD:
     def __call__(
         self,
         *,
-        segment: torch.Tensor,
+        audio: np.ndarray,
         thredhold: float = 0.5,
     ) -> Iterator[SpeechSegment]:
-        # segment.shape should be multiple of (N_FRAMES,)
+        # audio.shape should be multiple of (N_FRAMES,)
 
         def my_ret(
             *,
@@ -33,17 +34,17 @@ class VAD:
             return SpeechSegment(
                 start_block_idx=start_block_idx,
                 end_block_idx=idx,
-                segment=segment[N_FRAMES * start_block_idx : N_FRAMES * idx],
+                audio=audio[N_FRAMES * start_block_idx : N_FRAMES * idx],
             )
 
-        block_size: int = int(segment.shape[0] / N_FRAMES)
+        block_size: int = int(audio.shape[0] / N_FRAMES)
 
         start_block_idx = None
         for idx in range(block_size):
             start: int = N_FRAMES * idx
             end: int = N_FRAMES * (idx + 1)
             vad_prob = self.vad_model(
-                torch.from_numpy(segment[start:end]),
+                torch.from_numpy(audio[start:end]),
                 SAMPLE_RATE,
             ).item()
             if vad_prob > thredhold:

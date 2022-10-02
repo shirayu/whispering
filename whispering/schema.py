@@ -2,6 +2,7 @@
 
 from typing import List, Optional
 
+import numpy as np
 import torch
 from pydantic import BaseModel, root_validator
 
@@ -55,4 +56,4 @@ class ParsedChunk(BaseModel):
 class SpeechSegment(BaseModel, arbitrary_types_allowed=True):
     start_block_idx: int
     end_block_idx: int
-    segment: torch.Tensor
+    audio: np.ndarray

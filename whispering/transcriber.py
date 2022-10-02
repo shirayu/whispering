@@ -3,6 +3,7 @@
 from logging import getLogger
 from typing import Final, Iterator, Optional, Union
 
+import numpy as np
 import torch
 from whisper import Whisper, load_model
 from whisper.audio import (
@@ -226,13 +227,13 @@ class WhisperStreamingTranscriber:
     def transcribe(
         self,
         *,
-        segment: torch.Tensor,
+        audio: np.ndarray,
         ctx: Context,
     ) -> Iterator[ParsedChunk]:
-        for speech_segment in self.vad(segment=segment):
+        for speech_segment in self.vad(audio=audio):
             logger.debug(f"{speech_segment}")
 
-        new_mel = log_mel_spectrogram(audio=segment)
+        new_mel = log_mel_spectrogram(audio=audio)
         logger.debug(f"Incoming new_mel.shape: {new_mel.shape}")
         if ctx.buffer_mel is None:
             mel = new_mel
@@ -244,7 +245,7 @@ class WhisperStreamingTranscriber:
 
         seek: int = 0
         while seek < mel.shape[-1]:
-            segment = (
+            segment: torch.Tensor = (
                 pad_or_trim(mel[:, seek:], N_FRAMES)
                 .to(self.model.device)  # type: ignore
                 .to(self.dtype)
