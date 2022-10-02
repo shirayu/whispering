@@ -224,6 +224,19 @@ def show_devices():
             print(f"{i}: {device['name']}")
 
 
+def check_invalid_arg(opts):
+    ngs = []
+    if opts.mode == Mode.server.value:
+        ngs = [
+            "mic",
+            "allow_padding",
+        ]
+    for ng in ngs:
+        if vars(opts).get(ng) not in {None, False}:
+            sys.stderr.write(f"{ng} is not accepted option for {opts.mode} mode\n")
+            sys.exit(1)
+
+
 def main() -> None:
     opts = get_opts()
 
@@ -242,13 +255,20 @@ def main() -> None:
     ):
         opts.mode = Mode.server.value
 
+    check_invalid_arg(opts)
     if opts.mode == Mode.client.value:
         assert opts.language is None
         assert opts.model is None
+        ctx: Context = get_context(opts=opts)
         try:
             asyncio.run(
                 run_websocket_client(
-                    opts=opts,
+                    sd_device=opts.mic,
+                    num_block=opts.num_block,
+                    host=opts.host,
+                    port=opts.port,
+                    no_progress=opts.no_progress,
+                    ctx=ctx,
                 )
             )
         except KeyboardInterrupt:
@@ -257,13 +277,11 @@ def main() -> None:
         assert opts.language is not None
         assert opts.model is not None
         wsp = get_wshiper(opts=opts)
-        ctx: Context = get_context(opts=opts)
         asyncio.run(
             serve_with_websocket(
                 wsp=wsp,
                 host=opts.host,
                 port=opts.port,
-                ctx=ctx,
             )
         )
     else:

@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 import asyncio
+import json
+import sys
 from logging import getLogger
 from typing import Optional, Union
 
@@ -8,6 +10,7 @@ import websockets
 from whisper.audio import N_FRAMES, SAMPLE_RATE
 
 from whispering.schema import ParsedChunk
+from whispering.transcriber import Context
 
 logger = getLogger(__name__)
 
@@ -24,6 +27,7 @@ async def transcribe_from_mic_and_send(
     num_block: int,
     host: str,
     port: int,
+    ctx: Context,
 ) -> None:
     uri = f"ws://{host}:{port}"
 
@@ -36,6 +40,10 @@ async def transcribe_from_mic_and_send(
         callback=sd_callback,
     ):
         async with websockets.connect(uri, max_size=999999999) as ws:  # type:ignore
+            logger.debug("Sent context")
+            v: str = ctx.json()
+            await ws.send("""{"context": """ + v + """}""")
+
             idx: int = 0
             while True:
 
@@ -59,23 +67,35 @@ async def transcribe_from_mic_and_send(
                 while True:
                     try:
                         c = await asyncio.wait_for(recv(), timeout=0.5)
-                        chunk = ParsedChunk.parse_raw(c)
+                        c_json = json.loads(c)
+                        if (err := c_json.get("error")) is not None:
+                            print(f"Error: {err}")
+                            sys.exit(1)
+                        chunk = ParsedChunk.parse_obj(c_json)
                         print(f"{chunk.start:.2f}->{chunk.end:.2f}\t{chunk.text}")
                     except asyncio.TimeoutError:
                         break
-
                 idx += 1
 
 
-async def run_websocket_client(*, opts) -> None:
+async def run_websocket_client(
+    *,
+    sd_device: Optional[Union[int, str]],
+    num_block: int,
+    host: str,
+    port: int,
+    ctx: Context,
+    no_progress: bool,
+) -> None:
     global q
     global loop
     loop = asyncio.get_running_loop()
     q = asyncio.Queue()
 
     await transcribe_from_mic_and_send(
-        sd_device=opts.mic,
-        num_block=opts.num_block,
-        host=opts.host,
-        port=opts.port,
+        sd_device=sd_device,
+        num_block=num_block,
+        host=host,
+        port=port,
+        ctx=ctx,
     )
