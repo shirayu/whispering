@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 
 import asyncio
+import json
 from logging import getLogger
+from typing import Optional
 
 import numpy as np
 import websockets
@@ -14,11 +16,8 @@ logger = getLogger(__name__)
 
 async def serve_with_websocket_main(websocket):
     global g_wsp
-    global g_ctx
     idx: int = 0
-    ctx: Context = g_ctx.copy(
-        deep=True,
-    )
+    ctx: Optional[Context] = None
 
     while True:
         logger.debug(f"Audio #: {idx}")
@@ -33,6 +32,15 @@ async def serve_with_websocket_main(websocket):
 
         logger.debug(f"Message size: {len(message)}")
         audio = np.frombuffer(message, dtype=np.float32)
+        if ctx is None:
+            await websocket.send(
+                json.dumps(
+                    {
+                        "error": "no context",
+                    }
+                )
+            )
+            return
         for chunk in g_wsp.transcribe(
             audio=audio,  # type: ignore
             ctx=ctx,
@@ -46,14 +54,11 @@ async def serve_with_websocket(
     wsp: WhisperStreamingTranscriber,
     host: str,
     port: int,
-    ctx: Context,
 ):
     logger.info(f"Serve at {host}:{port}")
     logger.info("Make secure with your responsibility!")
     global g_wsp
-    global g_ctx
     g_wsp = wsp
-    g_ctx = ctx
 
     try:
         async with websockets.serve(  # type: ignore

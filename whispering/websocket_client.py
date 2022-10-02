@@ -8,6 +8,7 @@ import websockets
 from whisper.audio import N_FRAMES, SAMPLE_RATE
 
 from whispering.schema import ParsedChunk
+from whispering.transcriber import Context
 
 logger = getLogger(__name__)
 
@@ -24,6 +25,7 @@ async def transcribe_from_mic_and_send(
     num_block: int,
     host: str,
     port: int,
+    ctx: Context,
 ) -> None:
     uri = f"ws://{host}:{port}"
 
@@ -67,15 +69,24 @@ async def transcribe_from_mic_and_send(
                 idx += 1
 
 
-async def run_websocket_client(*, opts) -> None:
+async def run_websocket_client(
+    *,
+    sd_device: Optional[Union[int, str]],
+    num_block: int,
+    host: str,
+    port: int,
+    ctx: Context,
+    no_progress: bool,
+) -> None:
     global q
     global loop
     loop = asyncio.get_running_loop()
     q = asyncio.Queue()
 
     await transcribe_from_mic_and_send(
-        sd_device=opts.mic,
-        num_block=opts.num_block,
-        host=opts.host,
-        port=opts.port,
+        sd_device=sd_device,
+        num_block=num_block,
+        host=host,
+        port=port,
+        ctx=ctx,
     )
