@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 import asyncio
+import json
+import sys
 from logging import getLogger
 from typing import Optional, Union
 
@@ -64,11 +66,14 @@ async def transcribe_from_mic_and_send(
                 while True:
                     try:
                         c = await asyncio.wait_for(recv(), timeout=0.5)
-                        chunk = ParsedChunk.parse_raw(c)
+                        c_json = json.loads(c)
+                        if (err := c_json.get("error")) is not None:
+                            print(f"Error: {err}")
+                            sys.exit(1)
+                        chunk = ParsedChunk.parse_obj(c_json)
                         print(f"{chunk.start:.2f}->{chunk.end:.2f}\t{chunk.text}")
                     except asyncio.TimeoutError:
                         break
-
                 idx += 1
 
 
