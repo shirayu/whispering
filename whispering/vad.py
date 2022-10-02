@@ -22,7 +22,7 @@ class VAD:
         self,
         *,
         audio: np.ndarray,
-        thredhold: float = 0.5,
+        threshold: float = 0.5,
         total_block_number: Optional[int] = None,
     ) -> Iterator[SpeechSegment]:
         # audio.shape should be multiple of (N_FRAMES,)
@@ -50,7 +50,7 @@ class VAD:
                 torch.from_numpy(audio[start:end]),
                 SAMPLE_RATE,
             ).item()
-            if vad_prob > thredhold:
+            if vad_prob > threshold:
                 if start_block_idx is None:
                     start_block_idx = idx
             else:
