@@ -144,6 +144,10 @@ def get_opts() -> argparse.Namespace:
         "--allow-padding",
         action="store_true",
     )
+    group_ctx.add_argument(
+        "--no-vad",
+        action="store_true",
+    )
 
     group_misc = parser.add_argument_group("Other options")
     group_misc.add_argument(
@@ -156,10 +160,6 @@ def get_opts() -> argparse.Namespace:
         type=int,
         default=160,
         help="Number of operation unit",
-    )
-    group_misc.add_argument(
-        "--no-vad",
-        action="store_true",
     )
     group_misc.add_argument(
         "--mode",
