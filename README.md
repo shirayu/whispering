@@ -57,15 +57,13 @@ Run with ``--host`` and ``--port``.
 whispering --language en --model tiny --host 0.0.0.0 --port 8000
 ```
 
-You can set ``--allow-padding`` and other options.
-
 ### Client
 
 ```bash
 whispering --host ADDRESS_OF_HOST --port 8000 --mode client
 ```
 
-You can set ``-n`` and other options.
+You can set ``-n``, ``--allow-padding`` and other options.
 
 ## Tips
 
