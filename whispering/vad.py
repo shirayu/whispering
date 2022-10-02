@@ -2,7 +2,6 @@
 
 from typing import Iterator
 
-import numpy as np
 import torch
 from whisper.audio import N_FRAMES, SAMPLE_RATE
 
@@ -21,16 +20,26 @@ class VAD:
     def __call__(
         self,
         *,
-        segment: np.ndarray,
+        segment: torch.Tensor,
         thredhold: float = 0.5,
-    ) -> Iterator[SpeechBlock]:
+    ) -> Iterator[SpeechSegment]:
         # segment.shape should be multiple of (N_FRAMES,)
+
+        def my_ret(
+            *,
+            start_block_idx: int,
+            idx: int,
+        ) -> SpeechSegment:
+            return SpeechSegment(
+                start_block_idx=start_block_idx,
+                end_block_idx=idx,
+                segment=segment[N_FRAMES * start_block_idx : N_FRAMES * idx],
+            )
 
         block_size: int = int(segment.shape[0] / N_FRAMES)
 
         start_block_idx = None
-        for idx in range(block_size + 1):
-            if idx < block_size:
+        for idx in range(block_size):
             start: int = N_FRAMES * idx
             end: int = N_FRAMES * (idx + 1)
             vad_prob = self.vad_model(
@@ -42,9 +51,13 @@ class VAD:
                     start_block_idx = idx
             else:
                 if start_block_idx is not None:
-                    yield SpeechSegment(
+                    yield my_ret(
                         start_block_idx=start_block_idx,
-                        end_block_idx=idx,
-                        segment=segment[N_FRAMES * start_block_idx : N_FRAMES * idx],
+                        idx=idx,
                     )
                     start_block_idx = None
+        if start_block_idx is not None:
+            yield my_ret(
+                start_block_idx=start_block_idx,
+                idx=block_size,
+            )

@@ -5,6 +5,7 @@ from logging import getLogger
 
 import numpy as np
 import websockets
+from websockets.exceptions import ConnectionClosedOK
 
 from whispering.transcriber import Context, WhisperStreamingTranscriber
 
@@ -15,10 +16,16 @@ async def serve_with_websocket_main(websocket):
     global g_wsp
     global g_ctx
     idx: int = 0
+    ctx: Context = g_ctx.copy(
+        deep=True,
+    )
 
     while True:
         logger.debug(f"Segment #: {idx}")
-        message = await websocket.recv()
+        try:
+            message = await websocket.recv()
+        except ConnectionClosedOK:
+            break
 
         if isinstance(message, str):
             logger.debug(f"Got str: {message}")
@@ -26,7 +33,10 @@ async def serve_with_websocket_main(websocket):
 
         logger.debug(f"Message size: {len(message)}")
         segment = np.frombuffer(message, dtype=np.float32)
-        for chunk in g_wsp.transcribe(segment=segment, ctx=g_ctx):
+        for chunk in g_wsp.transcribe(
+            segment=segment,  # type: ignore
+            ctx=ctx,
+        ):
             await websocket.send(chunk.json())
         idx += 1
 
