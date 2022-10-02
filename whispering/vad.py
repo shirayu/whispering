@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from typing import Iterator
+from typing import Iterator, Optional
 
 import numpy as np
 import torch
@@ -23,6 +23,7 @@ class VAD:
         *,
         audio: np.ndarray,
         thredhold: float = 0.5,
+        total_block_number: Optional[int] = None,
     ) -> Iterator[SpeechSegment]:
         # audio.shape should be multiple of (N_FRAMES,)
 
@@ -37,12 +38,14 @@ class VAD:
                 audio=audio[N_FRAMES * start_block_idx : N_FRAMES * idx],
             )
 
-        block_size: int = int(audio.shape[0] / N_FRAMES)
+        if total_block_number is None:
+            total_block_number = int(audio.shape[0] / N_FRAMES)
+        block_unit: int = audio.shape[0] // total_block_number
 
         start_block_idx = None
-        for idx in range(block_size):
-            start: int = N_FRAMES * idx
-            end: int = N_FRAMES * (idx + 1)
+        for idx in range(total_block_number):
+            start: int = block_unit * idx
+            end: int = block_unit * (idx + 1)
             vad_prob = self.vad_model(
                 torch.from_numpy(audio[start:end]),
                 SAMPLE_RATE,
@@ -60,5 +63,5 @@ class VAD:
         if start_block_idx is not None:
             yield my_ret(
                 start_block_idx=start_block_idx,
-                idx=block_size,
+                idx=total_block_number,
             )

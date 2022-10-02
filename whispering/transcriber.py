@@ -7,6 +7,7 @@ import numpy as np
 import torch
 from whisper import Whisper, load_model
 from whisper.audio import (
+    CHUNK_LENGTH,
     HOP_LENGTH,
     N_FRAMES,
     SAMPLE_RATE,
@@ -52,6 +53,7 @@ class WhisperStreamingTranscriber:
         self.time_precision: Final[float] = (
             self.input_stride * HOP_LENGTH / SAMPLE_RATE
         )  # time per output token: 0.02 (seconds)
+        self.duration_pre_one_mel: Final[float] = CHUNK_LENGTH / HOP_LENGTH
         self.vad = VAD()
 
     def _get_decoding_options(
@@ -230,8 +232,18 @@ class WhisperStreamingTranscriber:
         audio: np.ndarray,
         ctx: Context,
     ) -> Iterator[ParsedChunk]:
-        for speech_segment in self.vad(audio=audio):
-            logger.debug(f"{speech_segment}")
+        logger.debug(f"{len(audio)}")
+        x = [
+            v
+            for v in self.vad(
+                audio=audio,
+                total_block_number=1,
+            )
+        ]
+        if len(x) == 0:  # No speech
+            logger.debug("No speech")
+            ctx.timestamp += len(audio) / N_FRAMES * self.duration_pre_one_mel
+            return
 
         new_mel = log_mel_spectrogram(audio=audio)
         logger.debug(f"Incoming new_mel.shape: {new_mel.shape}")
