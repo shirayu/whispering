@@ -134,13 +134,6 @@ def get_opts() -> argparse.Namespace:
         default=5,
     )
     group_ctx.add_argument(
-        "--num_block",
-        "-n",
-        type=int,
-        default=160,
-        help="Number of operation unit",
-    )
-    group_ctx.add_argument(
         "--temperature",
         "-t",
         type=float,
@@ -151,23 +144,30 @@ def get_opts() -> argparse.Namespace:
         "--allow-padding",
         action="store_true",
     )
-    group_ctx.add_argument(
-        "--no-progress",
-        action="store_true",
-    )
-    group_ctx.add_argument(
-        "--no-vad",
-        action="store_true",
-    )
-    group_ctx.add_argument(
-        "--mode",
-        choices=[v.value for v in Mode],
-    )
 
     group_misc = parser.add_argument_group("Other options")
     group_misc.add_argument(
         "--mic",
         help="Set MIC device",
+    )
+    group_misc.add_argument(
+        "--num_block",
+        "-n",
+        type=int,
+        default=160,
+        help="Number of operation unit",
+    )
+    group_misc.add_argument(
+        "--no-vad",
+        action="store_true",
+    )
+    group_misc.add_argument(
+        "--mode",
+        choices=[v.value for v in Mode],
+    )
+    group_misc.add_argument(
+        "--no-progress",
+        action="store_true",
     )
     group_misc.add_argument(
         "--show-devices",
