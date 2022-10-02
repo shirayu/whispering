@@ -41,7 +41,8 @@ async def transcribe_from_mic_and_send(
     ):
         async with websockets.connect(uri, max_size=999999999) as ws:  # type:ignore
             logger.debug("Sent context")
-            await ws.send(ctx.json())
+            v: str = ctx.json()
+            await ws.send("""{"context": """ + v + """}""")
 
             idx: int = 0
             while True:
