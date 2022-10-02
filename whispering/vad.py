@@ -22,7 +22,7 @@ class VAD:
         self,
         *,
         audio: np.ndarray,
-        threshold: float = 0.5,
+        threshold: float,
         total_block_number: Optional[int] = None,
     ) -> Iterator[SpeechSegment]:
         # audio.shape should be multiple of (N_FRAMES,)

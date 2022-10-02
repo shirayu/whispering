@@ -240,6 +240,7 @@ class WhisperStreamingTranscriber:
                 for v in self.vad(
                     audio=audio,
                     total_block_number=1,
+                    threshold=ctx.vad_threshold,
                 )
             ]
             if len(x) == 0:  # No speech

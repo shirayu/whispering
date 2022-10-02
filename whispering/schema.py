@@ -41,6 +41,7 @@ class Context(BaseModel, arbitrary_types_allowed=True):
     logprob_threshold: Optional[float] = -1.0
     compression_ratio_threshold: Optional[float] = 2.4
     buffer_threshold: Optional[float] = 0.5
+    vad_threshold: float = 0.5
 
 
 class ParsedChunk(BaseModel):
