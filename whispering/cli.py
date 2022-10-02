@@ -157,10 +157,12 @@ def get_opts() -> argparse.Namespace:
     group_misc = parser.add_argument_group("Other options")
     group_misc.add_argument(
         "--mic",
+        help="Set MIC device",
     )
     group_misc.add_argument(
         "--show-devices",
         action="store_true",
+        help="Show MIC devices",
     )
     group_misc.add_argument(
         "--debug",
