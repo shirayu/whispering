@@ -84,81 +84,89 @@ def transcribe_from_mic(
 
 def get_opts() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
-    parser.add_argument(
+
+    group_model = parser.add_argument_group("Whisper model options")
+    group_model.add_argument(
+        "--model",
+        type=str,
+        choices=available_models(),
+    )
+    group_model.add_argument(
         "--language",
         type=str,
         default=None,
         choices=sorted(LANGUAGES.keys())
         + sorted([k.title() for k in TO_LANGUAGE_CODE.keys()]),
     )
-    parser.add_argument(
-        "--model",
-        type=str,
-        choices=available_models(),
-    )
-    parser.add_argument(
+    group_model.add_argument(
         "--device",
         default="cuda" if torch.cuda.is_available() else "cpu",
         help="device to use for PyTorch inference",
     )
-    parser.add_argument(
+
+    group_ws = parser.add_argument_group("WebSocket options")
+    group_ws.add_argument(
+        "--host",
+        default="0.0.0.0",
+        help="host of websocker server",
+    )
+    group_ws.add_argument(
+        "--port",
+        type=int,
+        help="Port number of websocker server",
+    )
+
+    group_ctx = parser.add_argument_group("Parsing options")
+    group_ctx.add_argument(
         "--beam_size",
         "-b",
         type=int,
         default=5,
     )
-    parser.add_argument(
+    group_ctx.add_argument(
         "--num_block",
         "-n",
         type=int,
         default=160,
         help="Number of operation unit",
     )
-    parser.add_argument(
+    group_ctx.add_argument(
         "--temperature",
         "-t",
         type=float,
         action="append",
         default=[],
     )
-
-    parser.add_argument(
-        "--mic",
-    )
-    parser.add_argument(
-        "--debug",
-        action="store_true",
-    )
-    parser.add_argument(
-        "--host",
-        default="0.0.0.0",
-        help="host of websocker server",
-    )
-    parser.add_argument(
-        "--port",
-        type=int,
-        help="Port number of websocker server",
-    )
-    parser.add_argument(
+    group_ctx.add_argument(
         "--allow-padding",
         action="store_true",
     )
-    parser.add_argument(
-        "--mode",
-        choices=["client"],
-    )
-    parser.add_argument(
-        "--show-devices",
-        action="store_true",
-    )
-    parser.add_argument(
+    group_ctx.add_argument(
         "--no-progress",
         action="store_true",
     )
-    parser.add_argument(
+    group_ctx.add_argument(
         "--no-vad",
         action="store_true",
     )
+    group_ctx.add_argument(
+        "--mode",
+        choices=["client"],
+    )
+
+    group_misc = parser.add_argument_group("Other options")
+    group_misc.add_argument(
+        "--mic",
+    )
+    group_misc.add_argument(
+        "--show-devices",
+        action="store_true",
+    )
+    group_misc.add_argument(
+        "--debug",
+        action="store_true",
+    )
+
     opts = parser.parse_args()
 
     if opts.beam_size <= 0:
