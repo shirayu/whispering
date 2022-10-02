@@ -260,13 +260,22 @@ class WhisperStreamingTranscriber:
 
         seek: int = 0
         while seek < mel.shape[-1]:
+            logger.debug(f"seek: {seek}")
+            if mel.shape[-1] - seek < N_FRAMES:
+                logger.debug(
+                    f"mel.shape ({mel.shape[-1]}) - seek ({seek}) < N_FRAMES ({N_FRAMES})"
+                )
+                if ctx.allow_padding:
+                    logger.warning("Padding is not expected while speaking")
+                else:
+                    logger.debug("No padding")
+                    break
+
             segment: torch.Tensor = (
                 pad_or_trim(mel[:, seek:], N_FRAMES)
                 .to(self.model.device)  # type: ignore
                 .to(self.dtype)
             )
-            if not ctx.allow_padding and segment.shape[-1] > mel.shape[-1]:
-                logger.warning("Padding is not expected while speaking")
 
             logger.debug(
                 f"seek={seek}, timestamp={ctx.timestamp}, "
@@ -308,9 +317,6 @@ class WhisperStreamingTranscriber:
             else:
                 seek += last_timestamp_position * self.input_stride
             logger.debug(f"new seek={seek}, mel.shape: {mel.shape}")
-
-            if (not ctx.allow_padding) and (mel.shape[-1] - seek < N_FRAMES):
-                break
 
         if mel.shape[-1] - seek <= 0:
             logger.debug(f"ctx.buffer_mel is None ({mel.shape}, {seek})")
