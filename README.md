@@ -36,6 +36,7 @@ whispering --language en --model tiny
 - ``-t`` sets temperatures to decode. You can set several like ``-t 0.0 -t 0.1 -t 0.5``, but too many temperatures exhaust decoding time
 - ``--debug`` outputs logs for debug
 - ``--no-vad`` disables VAD (Voice Activity Detection). This forces whisper to analyze non-voice activity sound period
+- ``--output`` sets output file (Default: Standard output)
 
 ### Parse interval
 
