@@ -17,6 +17,7 @@ Enough machine power is needed to transcribe in real time.
 pip install -U git+https://github.com/shirayu/whispering.git
 
 # If you use GPU, install proper torch and torchaudio
+# Check https://pytorch.org/get-started/locally/
 # Example : torch for CUDA 11.6
 pip install -U torch torchaudio --extra-index-url https://download.pytorch.org/whl/cu116
 ```
