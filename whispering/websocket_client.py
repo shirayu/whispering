@@ -3,13 +3,14 @@ import asyncio
 import json
 import sys
 from logging import getLogger
+from pathlib import Path
 from typing import Optional, Union
 
 import sounddevice as sd
 import websockets
 from whisper.audio import N_FRAMES, SAMPLE_RATE
 
-from whispering.schema import ParsedChunk
+from whispering.schema import ParsedChunk, StdoutWriter
 from whispering.transcriber import Context
 
 logger = getLogger(__name__)
@@ -28,6 +29,7 @@ async def transcribe_from_mic_and_send(
     host: str,
     port: int,
     ctx: Context,
+    path_out: Union[Path, StdoutWriter],
 ) -> None:
     uri = f"ws://{host}:{port}"
 
@@ -38,7 +40,7 @@ async def transcribe_from_mic_and_send(
         dtype="float32",
         channels=1,
         callback=sd_callback,
-    ):
+    ), path_out.open("w") as outf:
         async with websockets.connect(uri, max_size=999999999) as ws:  # type:ignore
             logger.debug("Sent context")
             v: str = ctx.json()
@@ -69,10 +71,13 @@ async def transcribe_from_mic_and_send(
                         c = await asyncio.wait_for(recv(), timeout=0.5)
                         c_json = json.loads(c)
                         if (err := c_json.get("error")) is not None:
-                            print(f"Error: {err}")
+                            sys.stderr.write(f"Error: {err}\n")
                             sys.exit(1)
                         chunk = ParsedChunk.parse_obj(c_json)
-                        print(f"{chunk.start:.2f}->{chunk.end:.2f}\t{chunk.text}")
+                        outf.write(
+                            f"{chunk.start:.2f}->{chunk.end:.2f}\t{chunk.text}\n"
+                        )
+                        outf.flush()
                     except asyncio.TimeoutError:
                         break
                 idx += 1
@@ -86,6 +91,7 @@ async def run_websocket_client(
     port: int,
     ctx: Context,
     no_progress: bool,
+    path_out: Union[Path, StdoutWriter],
 ) -> None:
     global q
     global loop
@@ -98,4 +104,5 @@ async def run_websocket_client(
         host=host,
         port=port,
         ctx=ctx,
+        path_out=path_out,
     )
