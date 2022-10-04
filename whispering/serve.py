@@ -9,7 +9,7 @@ import numpy as np
 import websockets
 from websockets.exceptions import ConnectionClosedOK
 
-from whispering.transcriber import Context, WhisperStreamingTranscriber
+from transcriber import Context, WhisperStreamingTranscriber
 
 logger = getLogger(__name__)
 
@@ -18,7 +18,6 @@ async def serve_with_websocket_main(websocket):
     global g_wsp
     idx: int = 0
     ctx: Optional[Context] = None
-
     while True:
         logger.debug(f"Audio #: {idx}")
         try:
@@ -78,7 +77,7 @@ async def serve_with_websocket(
             serve_with_websocket_main,
             host=host,
             port=port,
-            max_size=999999999,
+            max_size=999999999
         ):
             await asyncio.Future()
     except KeyboardInterrupt:

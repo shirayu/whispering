@@ -18,8 +18,8 @@ from whisper.decoding import DecodingOptions, DecodingResult
 from whisper.tokenizer import get_tokenizer
 from whisper.utils import exact_div
 
-from whispering.schema import Context, ParsedChunk, WhisperConfig
-from whispering.vad import VAD
+from schema import Context, ParsedChunk, WhisperConfig
+from vad import VAD
 
 logger = getLogger(__name__)
 
@@ -41,11 +41,19 @@ class WhisperStreamingTranscriber:
     def __init__(self, *, config: WhisperConfig):
         self.config: Final[WhisperConfig] = config
         self.model: Final[Whisper] = load_model(config.model_name, device=config.device)
-        self.tokenizer = get_tokenizer(
-            self.model.is_multilingual,
-            language=config.language,
-            task="transcribe",
-        )
+        # language specified
+        if config.language != "multilanguage":
+            self.tokenizer = get_tokenizer(
+                self.model.is_multilingual,
+                language=config.language,
+                task="transcribe",
+            )
+        # Mulilanguage transcripts
+        else: 
+            self.tokenizer = get_tokenizer(
+                self.model.is_multilingual,
+                task="transcribe",
+            )
         self._set_dtype(config.fp16)
         self.input_stride: Final[int] = exact_div(
             N_FRAMES, self.model.dims.n_audio_ctx
@@ -65,23 +73,41 @@ class WhisperStreamingTranscriber:
         patience: Optional[float],
         best_of: Optional[int],
     ) -> DecodingOptions:
-        return DecodingOptions(
-            task="transcribe",
-            language=self.config.language,
-            temperature=t,
-            sample_len=None,
-            best_of=best_of,
-            beam_size=beam_size,
-            patience=patience,
-            length_penalty=None,
-            prompt=prompt,
-            prefix=None,
-            suppress_blank=True,
-            suppress_tokens="-1",
-            without_timestamps=False,
-            max_initial_timestamp=1.0,
-            fp16=self.fp16,
-        )
+        if self.config.language != "multilanguage":
+            return DecodingOptions(
+                task="transcribe",
+                language=self.config.language,
+                temperature=t,
+                sample_len=None,
+                best_of=best_of,
+                beam_size=beam_size,
+                patience=patience,
+                length_penalty=None,
+                prompt=prompt,
+                prefix=None,
+                suppress_blank=True,
+                suppress_tokens="-1",
+                without_timestamps=False,
+                max_initial_timestamp=1.0,
+                fp16=self.fp16,
+            )
+        else:
+            return DecodingOptions(
+                task="transcribe",
+                temperature=t,
+                sample_len=None,
+                best_of=best_of,
+                beam_size=beam_size,
+                patience=patience,
+                length_penalty=None,
+                prompt=prompt,
+                prefix=None,
+                suppress_blank=True,
+                suppress_tokens="-1",
+                without_timestamps=False,
+                max_initial_timestamp=1.0,
+                fp16=self.fp16,
+            )
 
     def _decode_with_fallback(
         self,
@@ -106,7 +132,6 @@ class WhisperStreamingTranscriber:
                 _decode_options,
             )  # type: ignore
             assert decode_result is not None
-
             needs_fallback: bool = False
             if (
                 ctx.compression_ratio_threshold is not None

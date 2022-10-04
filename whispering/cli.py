@@ -13,12 +13,18 @@ import torch
 from whisper import available_models
 from whisper.audio import N_FRAMES, SAMPLE_RATE
 from whisper.tokenizer import LANGUAGES, TO_LANGUAGE_CODE
-
+"""
 from whispering.pbar import ProgressBar
 from whispering.schema import Context, WhisperConfig
 from whispering.serve import serve_with_websocket
 from whispering.transcriber import WhisperStreamingTranscriber
 from whispering.websocket_client import run_websocket_client
+"""
+from pbar import ProgressBar
+from schema import Context, WhisperConfig
+from serve import serve_with_websocket
+from transcriber import WhisperStreamingTranscriber
+from websocket_client import run_websocket_client
 
 logger = getLogger(__name__)
 
@@ -105,7 +111,7 @@ def get_opts() -> argparse.Namespace:
         "--language",
         type=str,
         default=None,
-        choices=sorted(LANGUAGES.keys())
+        choices=["multilanguage"] + sorted(LANGUAGES.keys())
         + sorted([k.title() for k in TO_LANGUAGE_CODE.keys()]),
     )
     group_model.add_argument(
