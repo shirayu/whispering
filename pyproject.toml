@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "whisper-streaming"
+name = "whispering"
 version = "0.1.0"
 description = ""
 authors = ["Yuta Hayashibe <yuta@hayashibe.jp>"]
