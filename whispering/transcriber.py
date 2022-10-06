@@ -49,7 +49,7 @@ class WhisperStreamingTranscriber:
                 task="transcribe",
             )
         # Mulilanguage transcripts
-        else: 
+        else:
             self.tokenizer = get_tokenizer(
                 self.model.is_multilingual,
                 task="transcribe",
@@ -132,6 +132,7 @@ class WhisperStreamingTranscriber:
                 _decode_options,
             )  # type: ignore
             assert decode_result is not None
+
             needs_fallback: bool = False
             if (
                 ctx.compression_ratio_threshold is not None
