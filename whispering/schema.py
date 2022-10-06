@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import sys
 from typing import List, Optional
 
 import numpy as np
@@ -59,3 +60,20 @@ class SpeechSegment(BaseModel, arbitrary_types_allowed=True):
     start_block_idx: int
     end_block_idx: int
     audio: np.ndarray
+
+
+class StdoutWriter:
+    def open(self, *args, **kwargs):
+        return self
+
+    def __enter__(self, *args, **kwargs):
+        return self
+
+    def __exit__(self):
+        pass
+
+    def flush(self):
+        sys.stdout.flush()
+
+    def write(self, text):
+        sys.stdout.write(text)

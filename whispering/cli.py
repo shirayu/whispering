@@ -6,7 +6,8 @@ import queue
 import sys
 from enum import Enum
 from logging import DEBUG, INFO, basicConfig, getLogger
-from typing import Optional, Union
+from pathlib import Path
+from typing import Iterator, Optional, Union
 
 import sounddevice as sd
 import torch
@@ -15,7 +16,7 @@ from whisper.audio import N_FRAMES, SAMPLE_RATE
 from whisper.tokenizer import LANGUAGES, TO_LANGUAGE_CODE
 """
 from whispering.pbar import ProgressBar
-from whispering.schema import Context, WhisperConfig
+from whispering.schema import Context, StdoutWriter, WhisperConfig
 from whispering.serve import serve_with_websocket
 from whispering.transcriber import WhisperStreamingTranscriber
 from whispering.websocket_client import run_websocket_client
@@ -45,7 +46,7 @@ def transcribe_from_mic(
     num_block: int,
     ctx: Context,
     no_progress: bool,
-) -> None:
+) -> Iterator[str]:
     q = queue.Queue()
 
     def sd_callback(indata, frames, time, status):
@@ -88,7 +89,7 @@ def transcribe_from_mic(
                 if not no_progress:
                     sys.stderr.write("\r")
                     sys.stderr.flush()
-                print(f"{chunk.start:.2f}->{chunk.end:.2f}\t{chunk.text}")
+                yield f"{chunk.start:.2f}->{chunk.end:.2f}\t{chunk.text}\n"
                 if not no_progress:
                     sys.stderr.write("Analyzing")
                     sys.stderr.flush()
@@ -156,6 +157,13 @@ def get_opts() -> argparse.Namespace:
     )
 
     group_misc = parser.add_argument_group("Other options")
+    group_misc.add_argument(
+        "--output",
+        "-o",
+        help="Output file",
+        type=Path,
+        default=StdoutWriter(),
+    )
     group_misc.add_argument(
         "--mic",
         help="Set MIC device",
@@ -275,6 +283,7 @@ def main() -> None:
                     port=opts.port,
                     no_progress=opts.no_progress,
                     ctx=ctx,
+                    path_out=opts.output,
                 )
             )
         except KeyboardInterrupt:
@@ -295,13 +304,16 @@ def main() -> None:
         assert opts.model is not None
         wsp = get_wshiper(opts=opts)
         ctx: Context = get_context(opts=opts)
-        transcribe_from_mic(
-            wsp=wsp,
-            sd_device=opts.mic,
-            num_block=opts.num_block,
-            no_progress=opts.no_progress,
-            ctx=ctx,
-        )
+        with opts.output.open("w") as outf:
+            for text in transcribe_from_mic(
+                wsp=wsp,
+                sd_device=opts.mic,
+                num_block=opts.num_block,
+                no_progress=opts.no_progress,
+                ctx=ctx,
+            ):
+                outf.write(text)
+                outf.flush()
 
 
 if __name__ == "__main__":
