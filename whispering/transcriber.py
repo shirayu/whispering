@@ -18,8 +18,8 @@ from whisper.decoding import DecodingOptions, DecodingResult
 from whisper.tokenizer import get_tokenizer
 from whisper.utils import exact_div
 
-from schema import Context, ParsedChunk, WhisperConfig
-from vad import VAD
+from whispering.schema import Context, ParsedChunk, WhisperConfig
+from whispering.vad import VAD
 
 logger = getLogger(__name__)
 

@@ -6,7 +6,7 @@ import numpy as np
 import torch
 from whisper.audio import N_FRAMES, SAMPLE_RATE
 
-from schema import SpeechSegment
+from whispering.schema import SpeechSegment
 
 
 class VAD:

@@ -9,7 +9,7 @@ import numpy as np
 import websockets
 from websockets.exceptions import ConnectionClosedOK
 
-from transcriber import Context, WhisperStreamingTranscriber
+from whispering.transcriber import Context, WhisperStreamingTranscriber
 
 logger = getLogger(__name__)
 
