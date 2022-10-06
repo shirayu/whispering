@@ -18,7 +18,7 @@ from whisper.decoding import DecodingOptions, DecodingResult
 from whisper.tokenizer import get_tokenizer
 from whisper.utils import exact_div
 
-from whispering.schema import Context, ParsedChunk, WhisperConfig
+from whispering.schema import MULTI_LANGUAGE, Context, ParsedChunk, WhisperConfig
 from whispering.vad import VAD
 
 logger = getLogger(__name__)
@@ -41,19 +41,11 @@ class WhisperStreamingTranscriber:
     def __init__(self, *, config: WhisperConfig):
         self.config: Final[WhisperConfig] = config
         self.model: Final[Whisper] = load_model(config.model_name, device=config.device)
-        # language specified
-        if config.language != "multilanguage":
-            self.tokenizer = get_tokenizer(
-                self.model.is_multilingual,
-                language=config.language,
-                task="transcribe",
-            )
-        # Mulilanguage transcripts
-        else:
-            self.tokenizer = get_tokenizer(
-                self.model.is_multilingual,
-                task="transcribe",
-            )
+        self.tokenizer = get_tokenizer(
+            self.model.is_multilingual,
+            language=config.language if config.language != MULTI_LANGUAGE else None,
+            task="transcribe",
+        )
         self._set_dtype(config.fp16)
         self.input_stride: Final[int] = exact_div(
             N_FRAMES, self.model.dims.n_audio_ctx
@@ -73,7 +65,7 @@ class WhisperStreamingTranscriber:
         patience: Optional[float],
         best_of: Optional[int],
     ) -> DecodingOptions:
-        if self.config.language != "multilanguage":
+        if self.config.language != MULTI_LANGUAGE:
             return DecodingOptions(
                 task="transcribe",
                 language=self.config.language,
