@@ -16,7 +16,7 @@ from whisper.audio import N_FRAMES, SAMPLE_RATE
 from whisper.tokenizer import LANGUAGES, TO_LANGUAGE_CODE
 
 from whispering.pbar import ProgressBar
-from whispering.schema import Context, StdoutWriter, WhisperConfig
+from whispering.schema import MULTI_LANGUAGE, Context, StdoutWriter, WhisperConfig
 from whispering.serve import serve_with_websocket
 from whispering.transcriber import WhisperStreamingTranscriber
 from whispering.websocket_client import run_websocket_client
@@ -106,7 +106,8 @@ def get_opts() -> argparse.Namespace:
         "--language",
         type=str,
         default=None,
-        choices=sorted(LANGUAGES.keys())
+        choices=[MULTI_LANGUAGE]
+        + sorted(LANGUAGES.keys())
         + sorted([k.title() for k in TO_LANGUAGE_CODE.keys()]),
     )
     group_model.add_argument(
@@ -205,7 +206,7 @@ def get_opts() -> argparse.Namespace:
 def get_wshiper(*, opts) -> WhisperStreamingTranscriber:
     config = WhisperConfig(
         model_name=opts.model,
-        language=opts.language,
+        language=opts.language if opts.language == MULTI_LANGUAGE else None,
         device=opts.device,
     )
 
