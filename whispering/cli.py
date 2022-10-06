@@ -206,7 +206,7 @@ def get_opts() -> argparse.Namespace:
 def get_wshiper(*, opts) -> WhisperStreamingTranscriber:
     config = WhisperConfig(
         model_name=opts.model,
-        language=opts.language,
+        language=opts.language if opts.language == MULTI_LANGUAGE else None,
         device=opts.device,
     )
 

@@ -13,7 +13,7 @@ MULTI_LANGUAGE: Final[str] = "multi"
 class WhisperConfig(BaseModel):
     model_name: str
     device: str
-    language: str
+    language: Optional[str]
     fp16: bool = True
 
     @root_validator
