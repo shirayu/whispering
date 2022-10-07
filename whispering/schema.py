@@ -1,19 +1,17 @@
 #!/usr/bin/env python3
 
 import sys
-from typing import Final, List, Optional
+from typing import List, Optional
 
 import numpy as np
 import torch
 from pydantic import BaseModel, root_validator
 
-MULTI_LANGUAGE: Final[str] = "multi"
-
 
 class WhisperConfig(BaseModel):
     model_name: str
     device: str
-    language: Optional[str]
+    language: str
     fp16: bool = True
 
     @root_validator
