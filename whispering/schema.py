@@ -71,11 +71,11 @@ class StdoutWriter:
     def __enter__(self, *args, **kwargs):
         return self
 
-    def __exit__(self):
+    def __exit__(self, *args, **kwargs):
         pass
 
-    def flush(self):
+    def flush(self, *args, **kwargs):
         sys.stdout.flush()
 
-    def write(self, text):
+    def write(self, text, *args, **kwargs):
         sys.stdout.write(text)
