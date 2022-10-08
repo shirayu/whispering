@@ -1,5 +1,5 @@
 ---
-name: "\U2753 Question"
+name: "❓ Question"
 about: Question
 title: ''
 labels: 'Type: Question'
