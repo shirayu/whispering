@@ -1,4 +1,6 @@
 
+SHELL=/bin/bash
+
 all: lint_node lint_python
 
 TARGET_DIRS:=./whispering
@@ -16,7 +18,10 @@ yamllint:
 	find . \( -name node_modules -o -name .venv \) -prune -o -type f -name '*.yml' -print \
 		| xargs yamllint --no-warnings
 
-lint_python: flake8 black isort pydocstyle
+version_check:
+	 git tag | python ./scripts/check_version.py --toml pyproject.toml -i README.md --tags /dev/stdin
+
+lint_python: flake8 black isort pydocstyle version_check
 
 
 pyright:

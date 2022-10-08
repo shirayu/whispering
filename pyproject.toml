@@ -1,9 +1,14 @@
+[misc]
+stable_version = "0.5.0"
+
 [tool.poetry]
 name = "whispering"
-version = "0.1.0"
-description = ""
+version = "0.5.0"
+description = "Streaming transcriber with whisper"
+license = "MIT"
 authors = ["Yuta Hayashibe <yuta@hayashibe.jp>"]
 readme = "README.md"
+repository = "https://github.com/shirayu/whispering.git"
 packages = [{include = "whispering"}]
 
 [tool.poetry.dependencies]
@@ -22,6 +27,7 @@ black = ">=22.8.0"
 isort = ">=5.10.1"
 flake8 = ">=5.0.4"
 pydocstyle = ">=6.1.1"
+toml = "^0.10.2"
 
 [build-system]
 requires = ["poetry-core"]
@@ -29,4 +35,11 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
 whispering = "whispering.cli:main"
+
+[tool.pyright]
+pythonVersion = "3.8"
+typeCheckingMode = "basic"
+exclude = [".venv", "**/node_modules", "**/__pycache__",]
+reportPrivateImportUsage = "information"
+reportUnusedVariable="warning"
 
