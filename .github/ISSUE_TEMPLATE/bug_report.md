@@ -1,5 +1,5 @@
 ---
-name: Bug report
+name: "\U0001F41B Bug Report"
 about: Create a report to help us improve
 title: ''
 labels: ''
@@ -7,24 +7,24 @@ assignees: ''
 
 ---
 
-**Describe the bug**
+## Describe the bug
 <!-- A clear and concise description of what the bug is. -->
 
-**To Reproduce**
+## To Reproduce
 <!-- Steps to reproduce the behavior: -->
 
-**Expected behavior**
+## Expected behavior
 <!-- A clear and concise description of what you expected to happen. -->
 
-**Logs**
+## Logs
 <!-- Run with ``--debug``, you can get detailed logs -->
 
+## Environment
 
-**Environment **
- - OS:
- - Python Version:
- - Whispering version: 
+- OS:
+- Python Version:
+- Whispering version:
 
-**Additional context**
+## Additional context
 
 <!-- Add any other context about the problem here. -->
