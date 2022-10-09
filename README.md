@@ -22,6 +22,12 @@ pip install -U git+https://github.com/shirayu/whispering.git@v0.5.0
 pip install -U torch torchaudio --extra-index-url https://download.pytorch.org/whl/cu116
 ```
 
+If you get ``OSError: PortAudio library not found`` in Linux, install "PortAudio".
+
+```bash
+sudo apt -y install portaudio19-dev
+```
+
 ## Example of microphone
 
 ```bash
@@ -70,17 +76,6 @@ whispering --host ADDRESS_OF_HOST --port 8000 --mode client
 ```
 
 You can set ``-n``, ``--allow-padding`` and other options.
-
-## Tips
-
-## PortAudio Error
-
-If you get ``OSError: PortAudio library not found``: Install ``portaudio``
-
-```bash
-# Ubuntu
-sudo apt-get install portaudio19-dev
-```
 
 ## License
 
