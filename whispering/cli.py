@@ -117,7 +117,6 @@ def get_opts() -> argparse.Namespace:
     group_ws = parser.add_argument_group("WebSocket options")
     group_ws.add_argument(
         "--host",
-        default="0.0.0.0",
         help="host of websocker server",
     )
     group_ws.add_argument(
@@ -231,17 +230,28 @@ def show_devices():
             print(f"{i}: {device['name']}")
 
 
-def check_invalid_arg(opts):
-    ngs = []
+def is_valid_arg(opts) -> bool:
+    keys = []
     if opts.mode == Mode.server.value:
-        ngs = [
+        keys = [
             "mic",
+            "beam_size",
+            "temperature",
             "allow_padding",
+            "no-vad",
         ]
-    for ng in ngs:
-        if vars(opts).get(ng) not in {None, False}:
-            sys.stderr.write(f"{ng} is not accepted option for {opts.mode} mode\n")
-            sys.exit(1)
+    elif opts.mode == Mode.mic.value:
+        keys = [
+            "host",
+            "port",
+        ]
+
+    for key in keys:
+        _val = vars(opts).get(key)
+        if _val is not None and _val is not False:
+            sys.stderr.write(f"{key} is not accepted option for {opts.mode} mode\n")
+            return False
+    return True
 
 
 def main() -> None:
@@ -262,7 +272,9 @@ def main() -> None:
     ):
         opts.mode = Mode.server.value
 
-    check_invalid_arg(opts)
+    if not is_valid_arg(opts):
+        sys.exit(1)
+
     if opts.mode == Mode.client.value:
         assert opts.language is None
         assert opts.model is None
