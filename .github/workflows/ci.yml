@@ -47,7 +47,7 @@ jobs:
 
       - uses: actions/setup-node@v3
         with:
-          node-version: '14'
+          node-version: '16'
           cache: npm
       - run: npm install
       - run: poetry run make -j $(nproc)
