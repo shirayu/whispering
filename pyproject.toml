@@ -13,7 +13,7 @@ packages = [{include = "whispering"}]
 
 [tool.poetry.dependencies]
 python = ">=3.8,<3.11"
-whisper = {git = "https://github.com/openai/whisper.git", rev = '9e653bd0ea0f1e9493cb4939733e9de249493cfb'}
+whisper = {git = "https://github.com/openai/whisper.git", rev = 'd18e9ea5dd2ca57c697e8e55f9e654f06ede25d0'}
 sounddevice = "^0.4.5"
 pydantic = "^1.10.2"
 websockets = "^10.3"
