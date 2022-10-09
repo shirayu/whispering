@@ -33,7 +33,7 @@ def get_opts() -> argparse.Namespace:
     oparser = argparse.ArgumentParser()
     oparser.add_argument("--input", "-i", type=Path)
     oparser.add_argument("--toml", "-t", type=Path, required=True)
-    oparser.add_argument("--tags", type=Path)
+    oparser.add_argument("--tags")
     return oparser.parse_args()
 
 
@@ -47,9 +47,13 @@ def main() -> None:
 
     if opts.tags:
         tags = []
-        with opts.tags.open() as f:
-            for line in f:
+        if opts.tags == "-":
+            for line in sys.stdin:
                 tags.append(line[:-1])
+        else:
+            with opts.tags.open() as f:
+                for line in f:
+                    tags.append(line[:-1])
 
         if stable_version not in tags:
             sys.stderr.write(f"Tag {stable_version} not in git tags: {tags}\n")

@@ -10,7 +10,10 @@ on:  # yamllint disable-line rule:truthy
 
 jobs:
   ci:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
     steps:
       - uses: actions/checkout@v3
       - name: Get tags
@@ -44,7 +47,7 @@ jobs:
 
       - uses: actions/setup-node@v3
         with:
-          node-version: '14'
+          node-version: '16'
           cache: npm
       - run: npm install
       - run: poetry run make -j $(nproc)
