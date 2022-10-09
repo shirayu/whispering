@@ -33,7 +33,7 @@ def get_opts() -> argparse.Namespace:
     oparser = argparse.ArgumentParser()
     oparser.add_argument("--input", "-i", type=Path)
     oparser.add_argument("--toml", "-t", type=Path, required=True)
-    oparser.add_argument("--tags", type=Path)
+    oparser.add_argument("--tags")
     return oparser.parse_args()
 
 
@@ -47,7 +47,7 @@ def main() -> None:
 
     if opts.tags:
         tags = []
-        if str(opts.tags) == "/dev/stdin":
+        if opts.tags == "-":
             for line in sys.stdin:
                 tags.append(line[:-1])
         else:
