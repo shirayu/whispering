@@ -47,9 +47,13 @@ def main() -> None:
 
     if opts.tags:
         tags = []
-        with opts.tags.open() as f:
-            for line in f:
+        if str(opts.tags) == "/dev/stdin":
+            for line in sys.stdin:
                 tags.append(line[:-1])
+        else:
+            with opts.tags.open() as f:
+                for line in f:
+                    tags.append(line[:-1])
 
         if stable_version not in tags:
             sys.stderr.write(f"Tag {stable_version} not in git tags: {tags}\n")
