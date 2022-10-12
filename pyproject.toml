@@ -1,9 +1,9 @@
 [misc]
-stable_version = "0.5.0"
+stable_version = "0.5.1"
 
 [tool.poetry]
 name = "whispering"
-version = "0.6.0dev0"
+version = "0.5.1"
 description = "Streaming transcriber with whisper"
 license = "MIT"
 authors = ["Yuta Hayashibe <yuta@hayashibe.jp>"]

@@ -14,7 +14,7 @@ Enough machine power is needed to transcribe in real time.
 ## Setup
 
 ```bash
-pip install -U git+https://github.com/shirayu/whispering.git@v0.5.0
+pip install -U git+https://github.com/shirayu/whispering.git@v0.5.1
 
 # If you use GPU, install proper torch and torchaudio
 # Check https://pytorch.org/get-started/locally/
