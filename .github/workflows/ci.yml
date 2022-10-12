@@ -14,6 +14,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ["3.8", "3.9", "3.10"]
     steps:
       - uses: actions/checkout@v3
       - name: Get tags
@@ -27,7 +28,7 @@ jobs:
 
       - uses: actions/setup-python@v4
         with:
-          python-version: '3.9'
+          python-version: ${{ matrix.python-version }}
 
       - name: Install Poetry Action
         uses: snok/install-poetry@v1.3.2
@@ -40,7 +41,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: .venv
-          key: venv-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}-${{ hashFiles('**/package-lock.json') }}-2
+          key: venv-${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('**/poetry.lock') }}-${{ hashFiles('**/package-lock.json') }}-2
 
       - run: pip install poetry
       - run: poetry install
