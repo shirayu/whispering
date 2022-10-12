@@ -18,7 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Get tags
-        run: git fetch --tags origin
+        run: git fetch --tags origin -f
 
       - uses: awalsh128/cache-apt-pkgs-action@v1.1.1
         if: runner.os == 'Linux'
