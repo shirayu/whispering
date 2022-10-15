@@ -149,8 +149,10 @@ def get_opts() -> argparse.Namespace:
         action="store_true",
     )
     group_ctx.add_argument(
-        "--no-vad",
-        action="store_true",
+        "--vad",
+        type=float,
+        help="Threshold of VAD",
+        default=0.5,
     )
 
     group_misc = parser.add_argument_group("Other options")
@@ -223,7 +225,7 @@ def get_context(*, opts) -> Context:
         beam_size=opts.beam_size,
         temperatures=opts.temperature,
         allow_padding=opts.allow_padding,
-        vad=not opts.no_vad,
+        vad_threshold=opts.vad,
     )
     logger.debug(f"Context: {ctx}")
     return ctx
@@ -244,7 +246,6 @@ def is_valid_arg(opts) -> bool:
             "beam_size",
             "temperature",
             "allow_padding",
-            "no-vad",
         ]
     elif opts.mode == Mode.mic.value:
         keys = [

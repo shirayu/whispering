@@ -234,7 +234,7 @@ class WhisperStreamingTranscriber:
     ) -> Iterator[ParsedChunk]:
         logger.debug(f"{len(audio)}")
 
-        if ctx.vad:
+        if ctx.vad_threshold > 0.0:
             x = [
                 v
                 for v in self.vad(

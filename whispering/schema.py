@@ -32,7 +32,6 @@ class Context(BaseModel, arbitrary_types_allowed=True):
     timestamp: float = 0.0
     buffer_tokens: List[torch.Tensor] = []
     buffer_mel: Optional[torch.Tensor] = None
-    vad: bool = True
 
     temperatures: List[float]
     allow_padding: bool = False
@@ -46,7 +45,7 @@ class Context(BaseModel, arbitrary_types_allowed=True):
     logprob_threshold: Optional[float] = -1.0
     compression_ratio_threshold: Optional[float] = 2.4
     buffer_threshold: Optional[float] = 0.5
-    vad_threshold: float = 0.5
+    vad_threshold: float
 
 
 class ParsedChunk(BaseModel):
