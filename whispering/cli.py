@@ -16,7 +16,12 @@ from whisper.audio import N_FRAMES, SAMPLE_RATE
 from whisper.tokenizer import LANGUAGES, TO_LANGUAGE_CODE
 
 from whispering.pbar import ProgressBar
-from whispering.schema import Context, StdoutWriter, WhisperConfig
+from whispering.schema import (
+    CURRENT_PROTOCOL_VERSION,
+    Context,
+    StdoutWriter,
+    WhisperConfig,
+)
 from whispering.serve import serve_with_websocket
 from whispering.transcriber import WhisperStreamingTranscriber
 from whispering.websocket_client import run_websocket_client
@@ -214,6 +219,7 @@ def get_wshiper(*, opts) -> WhisperStreamingTranscriber:
 
 def get_context(*, opts) -> Context:
     ctx = Context(
+        protocol_version=CURRENT_PROTOCOL_VERSION,
         beam_size=opts.beam_size,
         temperatures=opts.temperature,
         allow_padding=opts.allow_padding,

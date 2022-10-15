@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import sys
-from typing import List, Optional
+from typing import Final, List, Optional
 
 import numpy as np
 import torch
@@ -24,7 +24,11 @@ class WhisperConfig(BaseModel):
         return values
 
 
+CURRENT_PROTOCOL_VERSION: Final[int] = int("000_006_000")
+
+
 class Context(BaseModel, arbitrary_types_allowed=True):
+    protocol_version: int
     timestamp: float = 0.0
     buffer_tokens: List[torch.Tensor] = []
     buffer_mel: Optional[torch.Tensor] = None

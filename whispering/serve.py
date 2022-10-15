@@ -3,7 +3,7 @@
 import asyncio
 import json
 from logging import getLogger
-from typing import Optional
+from typing import Final, Optional
 
 import numpy as np
 import websockets
@@ -12,6 +12,9 @@ from websockets.exceptions import ConnectionClosedOK
 from whispering.transcriber import Context, WhisperStreamingTranscriber
 
 logger = getLogger(__name__)
+
+MIN_PROTOCOL_VERSION: Final[int] = int("000_006_000")
+MAX_PROTOCOL_VERSION: Final[int] = int("000_006_000")
 
 
 async def serve_with_websocket_main(websocket):
@@ -41,6 +44,25 @@ async def serve_with_websocket_main(websocket):
                     )
                 )
                 return
+
+            if ctx.protocol_version < MIN_PROTOCOL_VERSION:
+                await websocket.send(
+                    json.dumps(
+                        {
+                            "error": f"protocol_version is older than {MIN_PROTOCOL_VERSION}"
+                        }
+                    )
+                )
+            elif ctx.protocol_version > MAX_PROTOCOL_VERSION:
+                await websocket.send(
+                    json.dumps(
+                        {
+                            "error": f"protocol_version is newer than {MAX_PROTOCOL_VERSION}"
+                        }
+                    )
+                )
+                return
+
             continue
 
         logger.debug(f"Message size: {len(message)}")
