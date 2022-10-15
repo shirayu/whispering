@@ -36,12 +36,12 @@ whispering --language en --model tiny
 ```
 
 - ``--help`` shows full options
-- ``--model`` set the [model name](https://github.com/openai/whisper#available-models-and-languages) to use. Larger models will be more accurate, but may not be able to transcribe in real time.
+- ``--model`` sets the [model name](https://github.com/openai/whisper#available-models-and-languages) to use. Larger models will be more accurate, but may not be able to transcribe in real time.
 - ``--language`` sets the language to transcribe. The list of languages are shown with ``whispering -h``
 - ``--no-progress`` disables the progress message
 - ``-t`` sets temperatures to decode. You can set several like ``-t 0.0 -t 0.1 -t 0.5``, but too many temperatures exhaust decoding time
 - ``--debug`` outputs logs for debug
-- ``--vad`` set VAD (Voice Activity Detection) threshold. 0 disables VAD and forces whisper to analyze non-voice activity sound period
+- ``--vad`` sets VAD (Voice Activity Detection) threshold. 0 disables VAD and forces whisper to analyze non-voice activity sound period
 - ``--output`` sets output file (Default: Standard output)
 
 ### Parse interval
