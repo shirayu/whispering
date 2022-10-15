@@ -41,7 +41,7 @@ whispering --language en --model tiny
 - ``--no-progress`` disables the progress message
 - ``-t`` sets temperatures to decode. You can set several like ``-t 0.0 -t 0.1 -t 0.5``, but too many temperatures exhaust decoding time
 - ``--debug`` outputs logs for debug
-- ``--vad`` sets VAD (Voice Activity Detection) threshold. 0 disables VAD and forces whisper to analyze non-voice activity sound period
+- ``--vad`` sets VAD (Voice Activity Detection) threshold. The default is ``0.5``. 0 disables VAD and forces whisper to analyze non-voice activity sound period
 - ``--output`` sets output file (Default: Standard output)
 
 ### Parse interval
@@ -49,19 +49,10 @@ whispering --language en --model tiny
 By default, whispering performs VAD for every 3.75 second.
 This interval is determined by the value of ``-n`` and its default is ``20``.
 When an interval is predicted as "silence", it will not be passed to whisper.
-If you want to disable VAD, please use ``--no-vad`` option.
+If you want to disable VAD, please make VAD threshold 0 by adding ``--vad 0``.
 
 By default, Whisper does not perform analysis until the total length of the segments determined by VAD to have speech exceeds 30 seconds.
-This is because Whisper is trained to make predictions for 30-second intervals.
-Nevertheless, if you want to force Whisper to perform analysis even if a segment is less than 30 seconds, please use ``--allow-padding`` option like this.
-
-```bash
-whispering --language en --model tiny -n 20 --allow-padding
-```
-
-This forces Whisper to analyze every 3.75 seconds speech segment.
-Using ``--allow-padding`` may sacrifice the accuracy, while you can get quick response.
-The smaller value of ``-n`` with ``--allow-padding`` is, the worse the accuracy becomes.
+However, if silence segments appear 16 times (the default value of ``--max_nospeech_skip``) after speech is detected, the analysis is performed.
 
 ## Example of web socket
 
@@ -81,7 +72,7 @@ whispering --language en --model tiny --host 0.0.0.0 --port 8000
 whispering --host ADDRESS_OF_HOST --port 8000 --mode client
 ```
 
-You can set ``-n``, ``--allow-padding`` and other options.
+You can set ``-n`` and other options.
 
 ## License
 

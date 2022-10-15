@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from logging import getLogger
 from typing import Iterator, Optional
 
 import numpy as np
@@ -7,6 +8,8 @@ import torch
 from whisper.audio import N_FRAMES, SAMPLE_RATE
 
 from whispering.schema import SpeechSegment
+
+logger = getLogger(__name__)
 
 
 class VAD:
@@ -50,6 +53,7 @@ class VAD:
                 torch.from_numpy(audio[start:end]),
                 SAMPLE_RATE,
             ).item()
+            logger.debug(f"VAD: {vad_prob} (threshold={threshold})")
             if vad_prob > threshold:
                 if start_block_idx is None:
                     start_block_idx = idx

@@ -14,7 +14,6 @@ def test_options():
         "--mode server --mic 1",
         "--mode server --beam_size 3",
         "--mode server --temperature 0",
-        "--mode server --allow-padding",
         "--mode server --num_block 3",
         "--mode mic --host 0.0.0.0",
         "--mode mic --port 8000",

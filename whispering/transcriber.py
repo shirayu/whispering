@@ -233,6 +233,7 @@ class WhisperStreamingTranscriber:
         ctx: Context,
     ) -> Iterator[ParsedChunk]:
         logger.debug(f"{len(audio)}")
+        force_padding: bool = False
 
         if ctx.vad_threshold > 0.0:
             x = [
@@ -246,7 +247,20 @@ class WhisperStreamingTranscriber:
             if len(x) == 0:  # No speech
                 logger.debug("No speech")
                 ctx.timestamp += len(audio) / N_FRAMES * self.duration_pre_one_mel
-                return
+
+                if ctx.nosoeech_skip_count is not None:
+                    ctx.nosoeech_skip_count += 1
+
+                if (
+                    ctx.nosoeech_skip_count is None
+                    or ctx.nosoeech_skip_count <= ctx.max_nospeech_skip
+                ):
+                    logger.debug(
+                        f"nosoeech_skip_count: {ctx.nosoeech_skip_count} (<= {ctx.max_nospeech_skip})"
+                    )
+                    return
+                ctx.nosoeech_skip_count = None
+                force_padding = True
 
         new_mel = log_mel_spectrogram(audio=audio)
         logger.debug(f"Incoming new_mel.shape: {new_mel.shape}")
@@ -261,12 +275,15 @@ class WhisperStreamingTranscriber:
         seek: int = 0
         while seek < mel.shape[-1]:
             logger.debug(f"seek: {seek}")
+            if mel.shape[-1] - seek <= 0:
+                logger.debug(f"No more seek: mel.shape={mel.shape}, seek={seek}")
+                break
             if mel.shape[-1] - seek < N_FRAMES:
                 logger.debug(
                     f"mel.shape ({mel.shape[-1]}) - seek ({seek}) < N_FRAMES ({N_FRAMES})"
                 )
-                if ctx.allow_padding:
-                    logger.warning("Padding is not expected while speaking")
+                if force_padding:
+                    logger.debug("Padding")
                 else:
                     logger.debug("No padding")
                     break
@@ -319,9 +336,13 @@ class WhisperStreamingTranscriber:
             logger.debug(f"new seek={seek}, mel.shape: {mel.shape}")
 
         if mel.shape[-1] - seek <= 0:
+            ctx.buffer_mel = None
+            ctx.nosoeech_skip_count = None
             logger.debug(f"ctx.buffer_mel is None ({mel.shape}, {seek})")
             return
         ctx.buffer_mel = mel[:, seek:]
         assert ctx.buffer_mel is not None
         logger.debug(f"ctx.buffer_mel.shape: {ctx.buffer_mel.shape}")
         del mel
+        if ctx.nosoeech_skip_count is None:
+            ctx.nosoeech_skip_count = 0  # start count

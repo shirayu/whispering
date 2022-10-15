@@ -145,14 +145,16 @@ def get_opts() -> argparse.Namespace:
         default=[],
     )
     group_ctx.add_argument(
-        "--allow-padding",
-        action="store_true",
-    )
-    group_ctx.add_argument(
         "--vad",
         type=float,
         help="Threshold of VAD",
         default=0.5,
+    )
+    group_ctx.add_argument(
+        "--max_nospeech_skip",
+        type=int,
+        help="Maximum number of skip to analyze because of nospeech",
+        default=16,
     )
 
     group_misc = parser.add_argument_group("Other options")
@@ -224,7 +226,7 @@ def get_context(*, opts) -> Context:
         protocol_version=CURRENT_PROTOCOL_VERSION,
         beam_size=opts.beam_size,
         temperatures=opts.temperature,
-        allow_padding=opts.allow_padding,
+        max_nospeech_skip=opts.max_nospeech_skip,
         vad_threshold=opts.vad,
     )
     logger.debug(f"Context: {ctx}")
@@ -245,7 +247,6 @@ def is_valid_arg(opts) -> bool:
             "mic",
             "beam_size",
             "temperature",
-            "allow_padding",
         ]
     elif opts.mode == Mode.mic.value:
         keys = [
