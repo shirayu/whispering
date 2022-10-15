@@ -46,16 +46,22 @@ whispering --language en --model tiny
 
 ### Parse interval
 
-Without ``--allow-padding``, whispering just performs VAD for the period,
-and when it is predicted as "silence", it will not be passed to whisper.
-If you want to change the VAD interval, change ``-n``.
+By default, whispering performs VAD for every 3.75 second.
+This interval is determined by the value of ``-n`` and its default is ``20``.
+When an interval is predicted as "silence", it will not be passed to whisper.
+If you want to disable VAD, please use ``--no-vad`` option.
 
-If you want quick response, set small ``-n`` and add ``--allow-padding``.
-However, this may sacrifice the accuracy.
+By default, Whisper does not perform analysis until the total length of the segments determined by VAD to have speech exceeds 30 seconds.
+This is because Whisper is trained to make predictions for 30-second intervals.
+Nevertheless, if you want to force Whisper to perform analysis even if a segment is less than 30 seconds, please use ``--allow-padding`` option like this.
 
 ```bash
 whispering --language en --model tiny -n 20 --allow-padding
 ```
+
+This forces Whisper to analyze every 3.75 seconds speech segment.
+Using ``--allow-padding`` may sacrifice the accuracy, while you can get quick response.
+The smaller value of ``-n`` with ``--allow-padding`` is, the worse the accuracy becomes.
 
 ## Example of web socket
 
