@@ -74,6 +74,46 @@ whispering --host ADDRESS_OF_HOST --port 8000 --mode client
 
 You can set ``-n`` and other options.
 
+## For Developers
+
+1. Install [Python](https://www.python.org/) and [Node.js](https://nodejs.org/)
+2. [Install poetry](https://python-poetry.org/docs/) to use ``poetry`` command
+3. Clone and install libraries
+
+    ```console
+    # Clone
+    git clone https://github.com/shirayu/whispering.git
+
+    # With poetry
+    poetry config virtualenvs.in-project true
+    poetry install --all-extras
+    poetry run pip install -U torch torchaudio --extra-index-url https://download.pytorch.org/whl/cu116
+
+    # With npm
+    npm install
+    ```
+
+4. Run test and check that no errors occur
+
+    ```bash
+    poetry run make -j4
+    ```
+
+5. Make fancy updates
+6. Run test again and check that no errors occur
+
+    ```bash
+    poetry run make -j4
+    ```
+
+7. Check typos by using [typos](https://github.com/crate-ci/typos). Just run ``typos`` command in the root directory.
+
+    ```bash
+    typos
+    ```
+
+8. Send Pull requests!
+
 ## License
 
 - [MIT License](LICENSE)
