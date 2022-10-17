@@ -9,7 +9,8 @@ import numpy as np
 import websockets
 from websockets.exceptions import ConnectionClosedOK
 
-from whispering.transcriber import Context, WhisperStreamingTranscriber
+from whispering.schema import Context
+from whispering.transcriber import WhisperStreamingTranscriber
 
 logger = getLogger(__name__)
 
@@ -66,7 +67,6 @@ async def serve_with_websocket_main(websocket):
             continue
 
         logger.debug(f"Message size: {len(message)}")
-        audio = np.frombuffer(message, dtype=np.dtype(ctx.data_type)).astype(np.float32)
         if ctx is None:
             await websocket.send(
                 json.dumps(
@@ -76,6 +76,7 @@ async def serve_with_websocket_main(websocket):
                 )
             )
             return
+        audio = np.frombuffer(message, dtype=np.dtype(ctx.data_type)).astype(np.float32)
         for chunk in g_wsp.transcribe(
             audio=audio,  # type: ignore
             ctx=ctx,
