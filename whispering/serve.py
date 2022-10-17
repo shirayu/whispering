@@ -66,7 +66,7 @@ async def serve_with_websocket_main(websocket):
             continue
 
         logger.debug(f"Message size: {len(message)}")
-        audio = np.frombuffer(message, dtype=np.float32)
+        audio = np.frombuffer(message, dtype=np.dtype(ctx.data_type)).astype(np.float32)
         if ctx is None:
             await websocket.send(
                 json.dumps(

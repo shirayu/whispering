@@ -48,6 +48,8 @@ class Context(BaseModel, arbitrary_types_allowed=True):
     vad_threshold: float
     max_nospeech_skip: int
 
+    data_type: Optional[str] = "float32"
+
 
 class ParsedChunk(BaseModel):
     start: float
