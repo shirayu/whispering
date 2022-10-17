@@ -9,13 +9,13 @@ import numpy as np
 import websockets
 from websockets.exceptions import ConnectionClosedOK
 
-from whispering.schema import Context
+from whispering.schema import CURRENT_PROTOCOL_VERSION, Context
 from whispering.transcriber import WhisperStreamingTranscriber
 
 logger = getLogger(__name__)
 
 MIN_PROTOCOL_VERSION: Final[int] = int("000_006_000")
-MAX_PROTOCOL_VERSION: Final[int] = int("000_006_000")
+MAX_PROTOCOL_VERSION: Final[int] = CURRENT_PROTOCOL_VERSION
 
 
 async def serve_with_websocket_main(websocket):
