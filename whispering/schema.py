@@ -24,7 +24,7 @@ class WhisperConfig(BaseModel):
         return values
 
 
-CURRENT_PROTOCOL_VERSION: Final[int] = int("000_006_000")
+CURRENT_PROTOCOL_VERSION: Final[int] = int("000_006_002")
 
 
 class Context(BaseModel, arbitrary_types_allowed=True):
