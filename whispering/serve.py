@@ -11,6 +11,7 @@ from websockets.exceptions import ConnectionClosedOK
 
 from whispering.schema import CURRENT_PROTOCOL_VERSION, Context
 from whispering.transcriber import WhisperStreamingTranscriber
+from whispering.resample import resample
 
 logger = getLogger(__name__)
 
@@ -77,6 +78,7 @@ async def serve_with_websocket_main(websocket):
             )
             return
         audio = np.frombuffer(message, dtype=np.dtype(ctx.data_type)).astype(np.float32)
+        audio = resample(audio, ctx.source_sample_rate)
         for chunk in g_wsp.transcribe(
             audio=audio,  # type: ignore
             ctx=ctx,

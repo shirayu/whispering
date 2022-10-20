@@ -49,6 +49,7 @@ class Context(BaseModel, arbitrary_types_allowed=True):
     max_nospeech_skip: int
 
     data_type: str = "float32"
+    source_sample_rate: int = 16000
 
 
 class ParsedChunk(BaseModel):
