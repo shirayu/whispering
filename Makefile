@@ -35,3 +35,7 @@ markdownlint:
 
 lint_node: markdownlint pyright
 
+
+style:
+	find $(TARGET_DIRS) | grep '\.py$$' | xargs black
+	find $(TARGET_DIRS) | grep '\.py$$' | xargs isort

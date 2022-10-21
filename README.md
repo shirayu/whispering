@@ -100,19 +100,25 @@ You can set ``-n`` and other options.
     ```
 
 5. Make fancy updates
-6. Run test again and check that no errors occur
+6. Make style
+
+    ```bash
+    poetry run make style
+    ```
+
+7. Run test again and check that no errors occur
 
     ```bash
     poetry run make -j4
     ```
 
-7. Check typos by using [typos](https://github.com/crate-ci/typos). Just run ``typos`` command in the root directory.
+8. Check typos by using [typos](https://github.com/crate-ci/typos). Just run ``typos`` command in the root directory.
 
     ```bash
     typos
     ```
 
-8. Send Pull requests!
+9. Send Pull requests!
 
 ## License
 
