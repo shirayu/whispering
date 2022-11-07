@@ -32,6 +32,7 @@ sudo apt -y install portaudio19-dev
 
 ```bash
 # Run in English
+#  By the default, it needs to wait at least 30 seconds
 whispering --language en --model tiny
 ```
 
