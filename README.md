@@ -52,7 +52,8 @@ This interval is determined by the value of ``-n`` and its default is ``20``.
 When an interval is predicted as "silence", it will not be passed to whisper.
 If you want to disable VAD, please make VAD threshold 0 by adding ``--vad 0``.
 
-By default, Whisper does not perform analysis until the total length of the segments determined by VAD to have speech exceeds 30 seconds.
+By default, whispering does not perform analysis until the total length of the segments determined by VAD to have speech exceeds 30 seconds.
+This is because the original Whisper assumes that the inputs are 30 seconds segments.
 However, if silence segments appear 16 times (the default value of ``--max_nospeech_skip``) after speech is detected, the analysis is performed.
 
 ## Example of web socket
