@@ -1,7 +1,5 @@
 FROM nvidia/cuda:11.8.0-base-ubuntu22.04
 
-
-
 # install python
 RUN apt-get update && apt-get install -y python3.8 python3-pip
 
