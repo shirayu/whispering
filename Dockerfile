@@ -15,3 +15,6 @@ COPY . /app
 WORKDIR /app
 
 RUN pip install .
+
+# open bash
+CMD ["/bin/bash"]
