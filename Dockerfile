@@ -1,7 +1,7 @@
 FROM nvidia/cuda:11.8.0-base-ubuntu22.04
 
-# install python
-RUN apt-get update && apt-get install -y python3.9 python3.9-dev python3-pip
+# install python and pip
+RUN apt-get update && apt-get install -y python3 python3-pip python3-dev
 
 # install portaudio
 RUN apt -y install portaudio19-dev
