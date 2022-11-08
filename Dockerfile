@@ -1,15 +1,8 @@
 FROM nvidia/cuda:11.8.0-base-ubuntu22.04
 
 # install python
-RUN apt-get update
-
-RUN apt install software-properties-common -y
-RUN add-apt-repository ppa:deadsnakes/ppa -y
-RUN apt update
-RUN apt install python3.8 -y
-
-# install pip
-RUN apt install python3-pip -y
+RUN apt-get update -y
+RUN apt-get install -y python-pip python-dev build-essential
 
 # install portaudio
 RUN apt -y install portaudio19-dev
