@@ -275,9 +275,6 @@ def is_valid_arg(
     return True
 
 
-whisper._download(whisper._MODELS["tiny"], "~/.cache/whisper", False)
-
-
 def main() -> None:
     opts = get_opts()
 
