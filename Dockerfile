@@ -18,5 +18,12 @@ WORKDIR /app
 
 RUN pip install .
 
+# install whisper models
+RUN python3 -c "import whisper; whisper.load_model('medium')"
+RUN python3 -c "import whisper; whisper.load_model('small')"
+RUN python3 -c "import whisper; whisper.load_model('base');"
+RUN python3 -c "import whisper; whisper.load_model('large');"
+RUN python3 -c "import whisper; whisper.load_model('tiny')"
+
 # open bash
 CMD ["/bin/bash"]
