@@ -227,13 +227,9 @@ class WhisperStreamingTranscriber:
         logger.debug(f"Length of buffer: {len(ctx.buffer_tokens)}")
 
     def transcribe(
-        self,
-        *,
-        audio: np.ndarray,
-        ctx: Context,
+        self, *, audio: np.ndarray, ctx: Context, force_padding: bool = False
     ) -> Iterator[ParsedChunk]:
         logger.debug(f"{len(audio)}")
-        force_padding: bool = False
 
         if ctx.vad_threshold > 0.0:
             x = [

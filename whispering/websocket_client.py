@@ -19,6 +19,9 @@ logger = getLogger(__name__)
 def sd_callback(indata, frames, time, status):
     if status:
         logger.warning(status)
+    logger.debug(f"Have indata: {len(indata)} {type(indata)}")
+    ravelled = indata.ravel().tobytes()
+    logger.debug(f"Have ravelled: {len(ravelled)} {type(ravelled)}")
     loop.call_soon_threadsafe(q.put_nowait, indata.ravel().tobytes())
 
 
@@ -44,7 +47,9 @@ async def transcribe_from_mic_and_send(
         async with websockets.connect(uri, max_size=999999999) as ws:  # type:ignore
             logger.debug("Sent context")
             v: str = ctx.json()
-            await ws.send("""{"context": """ + v + """}""")
+            msg = """{"context": """ + v + """}"""
+            logger.debug(f"Sending context\n{msg}")
+            await ws.send(msg)
 
             idx: int = 0
             while True:
@@ -59,7 +64,7 @@ async def transcribe_from_mic_and_send(
                 except asyncio.TimeoutError:
                     pass
                 if segment is not None:
-                    logger.debug(f"Segment size: {len(segment)}")
+                    logger.debug(f"Segment size: {len(segment)} {type(segment)}")
                     await ws.send(segment)
                     logger.debug("Sent")
 

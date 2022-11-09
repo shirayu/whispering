@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import asyncio
+import base64
 import json
 from logging import getLogger
 from typing import Final, Optional
@@ -30,7 +31,9 @@ async def serve_with_websocket_main(websocket):
         except ConnectionClosedOK:
             break
 
-        if isinstance(message, str):
+        force_padding = False
+
+        if isinstance(message, str) and not ctx:
             logger.debug(f"Got str: {message}")
             d = json.loads(message)
             v = d.get("context")
@@ -66,6 +69,15 @@ async def serve_with_websocket_main(websocket):
 
             continue
 
+        elif isinstance(message, str) and ctx:
+            d = json.loads(message)
+            logger.warning(f"Received last message")
+            if "last_message" in d:
+                # b64-decode message
+                message = base64.b64decode(d["last_message"])
+
+            force_padding = True
+
         logger.debug(f"Message size: {len(message)}")
         if ctx is None:
             await websocket.send(
@@ -76,10 +88,15 @@ async def serve_with_websocket_main(websocket):
                 )
             )
             return
+        logger.debug(f"Have message of size {len(message)} data type {ctx.data_type}")
+        # bytes to np array
+        # audio = np.frombuffer(message, dtype=ctx.data_type)
+
         audio = np.frombuffer(message, dtype=np.dtype(ctx.data_type)).astype(np.float32)
+        logger.warning(f"Have audio shape {audio.shape}")
+
         for chunk in g_wsp.transcribe(
-            audio=audio,  # type: ignore
-            ctx=ctx,
+            audio=audio, ctx=ctx, force_padding=force_padding  # type: ignore
         ):
             await websocket.send(chunk.json())
         idx += 1

@@ -11,14 +11,12 @@ RUN pip install torch==1.12.1+cu116 torchvision==0.13.1+cu116 torchaudio==0.12.1
 
 RUN pip install ipython
 
-# Copy entire repo
 COPY . /app
 
 WORKDIR /app
 
 RUN pip install .
 
-COPY download_whisper_models.py .
 RUN python3 download_whisper_models.py --models tiny small base medium large
 
 # open bash
