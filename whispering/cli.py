@@ -275,6 +275,17 @@ def is_valid_arg(
     return True
 
 
+import whisper
+from pathlib import Path
+
+[
+    whisper._download(
+        whisper._MODELS[m], str(Path("~/.cache/whisper").expanduser()), False
+    )
+    for m in ["tiny", "base", "small", "medium", "large"]
+]
+
+
 def main() -> None:
     opts = get_opts()
 
