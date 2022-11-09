@@ -18,8 +18,8 @@ WORKDIR /app
 
 RUN pip install .
 
-# install whisper models
-RUN python3 -c 'import whisper\nfrom pathlib import Path\n\n[\n    whisper._download(\n        whisper._MODELS[m], str(Path("~/.cache/whisper").expanduser()), False\n    )\n    for m in ["tiny", "base", "small", "medium", "large"]\n]'
+COPY download_whisper_models.py .
+RUN python3 download_whisper_models.py
 
 # open bash
 CMD ["/bin/bash"]
