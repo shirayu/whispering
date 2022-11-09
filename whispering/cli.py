@@ -11,6 +11,7 @@ from typing import Iterator, List, Optional, Union
 
 import sounddevice as sd
 import torch
+import whisper
 from whisper import available_models
 from whisper.audio import N_FRAMES, SAMPLE_RATE
 from whisper.tokenizer import LANGUAGES, TO_LANGUAGE_CODE
@@ -272,6 +273,9 @@ def is_valid_arg(
             sys.stderr.write(f"{arg} is not accepted option for {mode} mode\n")
             return False
     return True
+
+
+whisper._download(whisper._MODELS["tiny"], "~/.cache/whisper", False)
 
 
 def main() -> None:
