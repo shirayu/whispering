@@ -69,5 +69,10 @@ services:
     image: nginx:latest
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - whisper-0
+      - whisper-1
+      - whisper-2
+      - whisper-3
     ports:
       - "80:8080"
