@@ -1,10 +1,11 @@
+version: "3.9"
+
 services:
   whisper-0:
     image: whisper:latest
     container_name: whisper-0
     expose:
       - "7000"
-    entrypoint: /bin/bash
     command: >
       whispering --language en --model medium \
         --host 0.0.0.0 --port 7000 --device cuda --debug
@@ -21,7 +22,6 @@ services:
     container_name: whisper-1
     expose:
       - "7001"
-    entrypoint: /bin/bash
     command: >
       whispering --language en --model medium \
         --host 0.0.0.0 --port 7001 --device cuda --debug
