@@ -32,3 +32,35 @@ services:
             - driver: nvidia
               device_ids: [ '1' ]
               capabilities: [ gpu ]
+
+  whisper-2:
+    image: whisper:latest
+    container_name: whisper-2
+    ports:
+      - "7002:7002"
+    expose:
+      - "7002"
+    command: whispering --language en --model medium --host
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: [ '2' ]
+              capabilities: [ gpu ]
+
+  whisper-3:
+    image: whisper:latest
+    container_name: whisper-3
+    ports:
+      - "7003:7003"
+    expose:
+      - "7003"
+    command: whispering --language en --model medium --host
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: [ '3' ]
+              capabilities: [ gpu ]
