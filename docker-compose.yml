@@ -1,0 +1,34 @@
+services:
+  whisper-0:
+    image: whisper:latest
+    name: whisper-0
+    expose:
+      - "7000"
+    entrypoint: /bin/bash
+    command: >
+      whispering --language en --model medium \
+        --host 0.0.0.0 --port 7000 --device cuda --debug
+    deploy:
+      resources:
+        reservations:
+          devices:
+          - driver: nvidia
+            device_ids: ['0']
+            capabilities: [gpu]
+
+  whisper-1:
+    image: whisper:latest
+    name: whisper-1
+    expose:
+      - "7001"
+    entrypoint: /bin/bash
+    command: >
+      whispering --language en --model medium \
+        --host 0.0.0.0 --port 7001 --device cuda --debug
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: [ '1' ]
+              capabilities: [ gpu ]
