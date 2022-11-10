@@ -6,9 +6,9 @@ services:
     container_name: whisper-0
     expose:
       - "7000"
-    command: >
-      whispering --language en --model medium \
-        --host 0.0.0.0 --port 7000 --device cuda --debug
+    ports:
+      - "7000:7000"
+    command: whispering --language en --model medium --host 0.0.0.0 --port 7000 --device cuda --debug
     deploy:
       resources:
         reservations:
@@ -20,11 +20,11 @@ services:
   whisper-1:
     image: whisper:latest
     container_name: whisper-1
+    ports:
+      - "7001:7001"
     expose:
       - "7001"
-    command: >
-      whispering --language en --model medium \
-        --host 0.0.0.0 --port 7001 --device cuda --debug
+    command: whispering --language en --model medium --host 0.0.0.0 --port 7001 --device cuda --debug
     deploy:
       resources:
         reservations:
