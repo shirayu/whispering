@@ -64,3 +64,10 @@ services:
             - driver: nvidia
               device_ids: [ '3' ]
               capabilities: [ gpu ]
+
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - "80:8080"
