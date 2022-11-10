@@ -1,7 +1,7 @@
 services:
   whisper-0:
     image: whisper:latest
-    name: whisper-0
+    container_name: whisper-0
     expose:
       - "7000"
     entrypoint: /bin/bash
@@ -18,7 +18,7 @@ services:
 
   whisper-1:
     image: whisper:latest
-    name: whisper-1
+    container_name: whisper-1
     expose:
       - "7001"
     entrypoint: /bin/bash
