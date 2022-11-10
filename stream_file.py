@@ -26,7 +26,7 @@ parser.add_argument(
     "-u",
     "--url",
     help="url to connect to",
-    default="ws://ec2-3-71-72-35.eu-central-1.compute.amazonaws.com",
+    default="ws://whisper.cogram.com/transcribe",
 )
 parser.add_argument(
     "-c",
