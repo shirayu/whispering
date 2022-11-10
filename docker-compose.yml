@@ -40,7 +40,7 @@ services:
       - "7002:7002"
     expose:
       - "7002"
-    command: whispering --language en --model medium --host
+    command: whispering --language en --model medium --host 0.0.0.0 --port 7002 --device cuda --debug
     deploy:
       resources:
         reservations:
@@ -56,7 +56,7 @@ services:
       - "7003:7003"
     expose:
       - "7003"
-    command: whispering --language en --model medium --host
+    command: whispering --language en --model medium --host 0.0.0.0 --port 7003 --device cuda --debug
     deploy:
       resources:
         reservations:
