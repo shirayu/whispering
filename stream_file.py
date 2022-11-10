@@ -10,6 +10,7 @@ from pathlib import Path
 
 import coloredlogs
 import soundfile as sf
+import uuid
 import websockets
 
 logger = logging.getLogger(__name__)
@@ -137,25 +138,36 @@ async def send_receive():
                     break
 
                 i += 1
+
+            audio_duration = sf.info(_tfile).duration
+            transcription_time = time.time() - start_time
+
             logger.info(f"Full text:\n---\n{full_text.strip()}\n---")
-            logger.info(f"Total time: {time.time() - start_time:.3f} s")
+            logger.info(f"Performed inference on {args.url}")
+            logger.info(
+                f"Duration of audio file: {audio_duration:.3f} s - "
+                f"transcription time: {transcription_time:.3f} s - "
+                f"transcription speed: {audio_duration / transcription_time:.3f} x real time"
+            )
 
         send_result, receive_result = await asyncio.gather(send(), receive())
 
 
 def convert_to_wav(tfile_name):
-    os.system(f"ffmpeg -i {args.file} -acodec pcm_s16le -ac 1 -ar 16000 {tfile_name}")
+    os.system(
+        f"ffmpeg -hide_banner -loglevel error "
+        f"-i {args.file} -acodec pcm_s16le -ac 1 -ar 16000 {tfile_name}"
+    )
     logger.info(f"Converted file to {tfile_name}")
 
 
 if __name__ == "__main__":
     args = parser.parse_args()
 
-    _tfile = f"tmp_{args.file}.wav"
+    _tfile = f"tmp_{args.file}_{uuid.uuid4()}.wav"
 
     try:
         convert_to_wav(_tfile)
-
         loop = asyncio.get_event_loop()
         loop.run_until_complete(send_receive())
     finally:
