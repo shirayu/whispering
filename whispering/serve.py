@@ -24,6 +24,7 @@ async def serve_with_websocket_main(websocket):
     idx: int = 0
     ctx: Optional[Context] = None
 
+    j = 0
     while True:
         logger.debug(f"Audio #: {idx}")
         try:
@@ -32,6 +33,10 @@ async def serve_with_websocket_main(websocket):
             break
 
         force_padding = False
+
+        logger.debug(f"j={j}, padding={force_padding}")
+
+        j += 1
 
         if isinstance(message, str) and not ctx:
             logger.debug(f"Got str: {message}")
@@ -88,17 +93,23 @@ async def serve_with_websocket_main(websocket):
                 )
             )
             return
-        logger.debug(f"Have message of size {len(message)} data type {ctx.data_type}")
-        # bytes to np array
-        # audio = np.frombuffer(message, dtype=ctx.data_type)
 
         audio = np.frombuffer(message, dtype=np.dtype(ctx.data_type)).astype(np.float32)
-        logger.warning(f"Have audio shape {audio.shape}")
+
+        k = 0
 
         for chunk in g_wsp.transcribe(
             audio=audio, ctx=ctx, force_padding=force_padding  # type: ignore
         ):
-            await websocket.send(chunk.json())
+            cjs = json.loads(chunk.json())
+
+            logger.debug(f"k={k}, padding={force_padding}")
+            await websocket.send(json.dumps(cjs))
+            k += 1
+
+        if force_padding:
+            await websocket.send(json.dumps({"close_connection": force_padding}))
+
         idx += 1
 
 
