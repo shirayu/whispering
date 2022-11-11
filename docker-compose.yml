@@ -10,7 +10,7 @@ services:
       - "7000:7000"
     command: whispering --language en --model medium --host 0.0.0.0 --port 7000 --device cuda --debug
     volumes:
-      - /home/ubuntu/.cache/whisper:/root/.cache/whisper
+      - ~/.cache/whisper:/root/.cache/whisper/:ro
     deploy:
       resources:
         reservations:
@@ -28,7 +28,7 @@ services:
       - "7001"
     command: whispering --language en --model medium --host 0.0.0.0 --port 7001 --device cuda --debug
     volumes:
-      - /home/ubuntu/.cache/whisper:/root/.cache/whisper
+      - ~/.cache/whisper:/root/.cache/whisper/:ro
     deploy:
       resources:
         reservations:
@@ -46,7 +46,7 @@ services:
       - "7002"
     command: whispering --language en --model medium --host 0.0.0.0 --port 7002 --device cuda --debug
     volumes:
-      - /home/ubuntu/.cache/whisper:/root/.cache/whisper
+      - ~/.cache/whisper:/root/.cache/whisper/:ro
     deploy:
       resources:
         reservations:
@@ -64,7 +64,7 @@ services:
       - "7003"
     command: whispering --language en --model medium --host 0.0.0.0 --port 7003 --device cuda --debug
     volumes:
-      - /home/ubuntu/.cache/whisper:/root/.cache/whisper
+      - ~/.cache/whisper:/root/.cache/whisper/:ro
     deploy:
       resources:
         reservations:
