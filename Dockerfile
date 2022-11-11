@@ -17,7 +17,5 @@ WORKDIR /app
 
 RUN pip install .
 
-RUN python3 download_whisper_models.py --models tiny small base medium large
-
 # open bash
 CMD ["/bin/bash"]
