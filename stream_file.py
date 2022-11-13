@@ -65,27 +65,22 @@ def wave_generator():
 
 
 async def send_receive():
-    logger.info(f"Connecting websocket to url ${args.url}")
+    logger.info(f"Connecting websocket to url {args.url}")
     wave_gen = wave_generator()
     start_time = time.time()
     async with websockets.connect(
         args.url,
         ping_interval=5,
-        ping_timeout=20,
+        ping_timeout=300,
     ) as _ws:
-        await asyncio.sleep(0.1)
-        # print("Receiving SessionBegins ...")
         logger.info(f"Sending initial context")
         await _ws.send(json.dumps(initial_context))
-        # session_begins = await _ws.recv()
-        # print(session_begins)
         logger.info("Sending messages ...")
 
         async def send():
             i = 1
             while True:
                 try:
-                    # print("Trying to send")
                     segment = next(wave_gen)
                     logger.info(f"Sending segment {i} of length {len(segment)}")
                     if len(segment) == args.chunk_size * 4:
@@ -124,6 +119,7 @@ async def send_receive():
                         logger.info("Closing connection")
                         break
 
+                    logger.info(f"Full res: {json.dumps(rjs, indent=2)}")
                     res = rjs["text"]
                     logger.info(f"Result {i}:\t{res.strip()}")
                     full_text += res
@@ -147,10 +143,11 @@ async def send_receive():
             logger.info(
                 f"Duration of audio file: {audio_duration:.3f} s - "
                 f"transcription time: {transcription_time:.3f} s - "
-                f"transcription speed: {audio_duration / transcription_time:.3f} x real time"
+                f"transcription speed: {audio_duration / transcription_time:.3f} "
+                f"x real time"
             )
 
-        send_result, receive_result = await asyncio.gather(send(), receive())
+        await asyncio.gather(send(), receive())
 
 
 def convert_to_wav(tfile_name):
