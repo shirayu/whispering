@@ -14,7 +14,7 @@ Enough machine power is needed to transcribe in real time.
 ## Setup
 
 ```bash
-pip install -U git+https://github.com/shirayu/whispering.git@v0.6.3
+pip install -U git+https://github.com/shirayu/whispering.git@v0.6.4
 
 # If you use GPU, install proper torch and torchaudio
 # Check https://pytorch.org/get-started/locally/
@@ -44,6 +44,7 @@ whispering --language en --model tiny
 - ``--debug`` outputs logs for debug
 - ``--vad`` sets VAD (Voice Activity Detection) threshold. The default is ``0.5``. ``0`` disables VAD and forces whisper to analyze non-voice activity sound period. Try ``--vad 0`` if VAD prevents transcription.
 - ``--output`` sets output file (Default: Standard output)
+- ``--frame``: the number of minimum frames of mel spectrogram input for Whisper (default: ``3000``. i.e. 30 seconds)
 
 ### Parse interval
 
@@ -52,8 +53,10 @@ This interval is determined by the value of ``-n`` and its default is ``20``.
 When an interval is predicted as "silence", it will not be passed to whisper.
 If you want to disable VAD, please make VAD threshold 0 by adding ``--vad 0``.
 
-By default, Whisper does not perform analysis until the total length of the segments determined by VAD to have speech exceeds 30 seconds.
+By default, whispering does not perform analysis until the total length of the segments determined by VAD to have speech exceeds 30 seconds.
+This is because the original Whisper assumes that the inputs are 30 seconds segments.
 However, if silence segments appear 16 times (the default value of ``--max_nospeech_skip``) after speech is detected, the analysis is performed.
+You can make the length of segments smaller with ``--frame`` option (default: 3000), but it sacrifices accuracy because this is not expected input for Whisper.
 
 ## Example of web socket
 

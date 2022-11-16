@@ -5,7 +5,8 @@ from typing import Final, List, Optional
 
 import numpy as np
 import torch
-from pydantic import BaseModel, root_validator
+from pydantic import BaseModel, Field, root_validator
+from whisper.audio import N_FRAMES
 
 
 class WhisperConfig(BaseModel):
@@ -24,7 +25,7 @@ class WhisperConfig(BaseModel):
         return values
 
 
-CURRENT_PROTOCOL_VERSION: Final[int] = int("000_006_002")
+CURRENT_PROTOCOL_VERSION: Final[int] = int("000_006_003")
 
 
 class Context(BaseModel, arbitrary_types_allowed=True):
@@ -47,6 +48,7 @@ class Context(BaseModel, arbitrary_types_allowed=True):
     buffer_threshold: Optional[float] = 0.5
     vad_threshold: float
     max_nospeech_skip: int
+    mel_frame_min_num: int = Field(N_FRAMES, ge=1, le=N_FRAMES)
 
     data_type: str = "float32"
 
