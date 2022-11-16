@@ -156,6 +156,12 @@ def get_opts() -> argparse.Namespace:
         help="Maximum number of skip to analyze because of nospeech",
         default=16,
     )
+    group_ctx.add_argument(
+        "--frame",
+        type=int,
+        help="The number of minimum frames of mel spectrogram input for Whisper",
+        default=N_FRAMES,
+    )
 
     group_misc = parser.add_argument_group("Other options")
     group_misc.add_argument(
@@ -228,6 +234,7 @@ def get_context(*, opts) -> Context:
         temperatures=opts.temperature,
         max_nospeech_skip=opts.max_nospeech_skip,
         vad_threshold=opts.vad,
+        mel_frame_min_num=opts.frame,
     )
     logger.debug(f"Context: {ctx}")
     return ctx

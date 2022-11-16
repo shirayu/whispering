@@ -278,9 +278,9 @@ class WhisperStreamingTranscriber:
             if mel.shape[-1] - seek <= 0:
                 logger.debug(f"No more seek: mel.shape={mel.shape}, seek={seek}")
                 break
-            if mel.shape[-1] - seek < N_FRAMES:
+            if mel.shape[-1] - seek < ctx.mel_frame_min_num:
                 logger.debug(
-                    f"mel.shape ({mel.shape[-1]}) - seek ({seek}) < N_FRAMES ({N_FRAMES})"
+                    f"mel.shape ({mel.shape[-1]}) - seek ({seek}) < ctx.mel_frame_min_num ({ctx.mel_frame_min_num})"
                 )
                 if force_padding:
                     logger.debug("Padding")
