@@ -1,5 +1,5 @@
 [misc]
-stable_version = "0.6.4"
+stable_version = "0.6.5"
 
 [tool.poetry]
 name = "whispering"
