@@ -15,7 +15,7 @@ packages = [{include = "whispering"}]
 python = ">=3.8,<3.11"
 whisper = {git = "https://github.com/openai/whisper.git", rev = 'fd8f80c8b880dd7c284c109ca7f03dbe978bc532'}
 sounddevice = "^0.4.5"
-pydantic = "^1.10.2"
+pydantic = "^1.10.4"
 websockets = "^10.4"
 tqdm = "*"
 torchaudio = "^0.13.1"
