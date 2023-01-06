@@ -30,9 +30,9 @@ class WhisperStreamingTranscriber:
         self.dtype = torch.float16 if fp16 else torch.float32
         if self.model.device == torch.device("cpu"):
             if torch.cuda.is_available():
-                logger.warning("Performing inference on CPU when CUDA is available")
+                logger.info("Performing inference on CPU though CUDA is available")
             if self.dtype == torch.float16:
-                logger.warning("FP16 is not supported on CPU; using FP32 instead")
+                logger.info("Using FP32 because FP16 is not supported on CPU")
                 self.dtype = torch.float32
 
         if self.dtype == torch.float32:
