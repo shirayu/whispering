@@ -3,7 +3,7 @@ stable_version = "0.6.6"
 
 [tool.poetry]
 name = "whispering"
-version = "0.6.6"
+version = "0.6.7pre0"
 description = "Streaming transcriber with whisper"
 license = "MIT"
 authors = ["Yuta Hayashibe <yuta@hayashibe.jp>"]
