@@ -11,6 +11,14 @@
 Streaming transcriber with [whisper](https://github.com/openai/whisper).
 Enough machine power is needed to transcribe in real time.
 
+## Notice
+
+This repository has been archived.
+There are some alternatives.
+
+- <https://github.com/guillaumekln/faster-whisper>
+- <https://github.com/ggerganov/whisper.cpp>
+
 ## Setup
 
 ```bash
